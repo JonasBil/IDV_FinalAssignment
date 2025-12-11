@@ -1,0 +1,182 @@
+{
+  "ancona": {
+    "lat": 43.4801189,
+    "lon": 13.2187279,
+    "source": "osm"
+  },
+  "barcelona": {
+    "lat": 41.3825802,
+    "lon": 2.177073,
+    "source": "osm"
+  },
+  "berlin": {
+    "lat": 52.5173885,
+    "lon": 13.3951309,
+    "source": "osm"
+  },
+  "bologna": {
+    "lat": 44.4938203,
+    "lon": 11.3426327,
+    "source": "osm"
+  },
+  "brussels": {
+    "lat": 50.8465573,
+    "lon": 4.351697,
+    "source": "osm"
+  },
+  "budapest": {
+    "lat": 47.4978789,
+    "lon": 19.0402383,
+    "source": "osm"
+  },
+  "chisinau": {
+    "lat": 47.0245117,
+    "lon": 28.8322923,
+    "source": "osm"
+  },
+  "debrecen": {
+    "lat": 47.531399,
+    "lon": 21.6259782,
+    "source": "osm"
+  },
+  "firenze": {
+    "lat": 43.7697955,
+    "lon": 11.2556404,
+    "source": "osm"
+  },
+  "gdansk": {
+    "lat": 54.4288032,
+    "lon": 18.798327,
+    "source": "osm"
+  },
+  "genova": {
+    "lat": 44.40726,
+    "lon": 8.9338624,
+    "source": "osm"
+  },
+  "zagreb": {
+    "lat": 45.8130967,
+    "lon": 15.9772795,
+    "source": "osm"
+  },
+  "katowice": {
+    "lat": 50.2598987,
+    "lon": 19.0215852,
+    "source": "osm"
+  },
+  "krakow": {
+    "lat": 50.0619474,
+    "lon": 19.9368564,
+    "source": "osm"
+  },
+  "kyiv": {
+    "lat": 50.4500336,
+    "lon": 30.5241361,
+    "source": "osm"
+  },
+  "københavn": {
+    "lat": 55.6867243,
+    "lon": 12.5700724,
+    "source": "osm"
+  },
+  "lisboa": {
+    "lat": 38.7077507,
+    "lon": -9.1365919,
+    "source": "osm"
+  },
+  "lyon": {
+    "lat": 45.7578137,
+    "lon": 4.8320114,
+    "source": "osm"
+  },
+  "madrid": {
+    "lat": 40.416782,
+    "lon": -3.703507,
+    "source": "osm"
+  },
+  "milano": {
+    "lat": 45.4641943,
+    "lon": 9.1896346,
+    "source": "osm"
+  },
+  "bucuresti": {
+    "lat": 44.4361414,
+    "lon": 26.1027202,
+    "source": "osm"
+  },
+  "sibiu": {
+    "lat": 45.7973912,
+    "lon": 24.1519202,
+    "source": "osm"
+  },
+  "munchen": {
+    "lat": 48.1371079,
+    "lon": 11.5753822,
+    "source": "osm"
+  },
+  "oslo": {
+    "lat": 59.9133301,
+    "lon": 10.7389701,
+    "source": "osm"
+  },
+  "palermo": {
+    "lat": 38.1112268,
+    "lon": 13.3524434,
+    "source": "osm"
+  },
+  "paris": {
+    "lat": 48.8588897,
+    "lon": 2.320041,
+    "source": "osm"
+  },
+  "praha": {
+    "lat": 50.0874654,
+    "lon": 14.4212535,
+    "source": "osm"
+  },
+  "sevilla": {
+    "lat": 37.3886303,
+    "lon": -5.9953403,
+    "source": "osm"
+  },
+  "stockholm": {
+    "lat": 59.3251172,
+    "lon": 18.0710935,
+    "source": "osm"
+  },
+  "torino": {
+    "lat": 45.0677551,
+    "lon": 7.6824892,
+    "source": "osm"
+  },
+  "warszawa": {
+    "lat": 52.2319581,
+    "lon": 21.0067249,
+    "source": "osm"
+  },
+  "wien": {
+    "lat": 48.2083537,
+    "lon": 16.3725042,
+    "source": "osm"
+  },
+  "wrocław": {
+    "lat": 51.1263106,
+    "lon": 16.9781963,
+    "source": "osm"
+  },
+  "łodz": {
+    "lat": 51.7728245,
+    "lon": 19.4784857,
+    "source": "osm"
+  },
+  "roma": {
+    "lat": 41.8933203,
+    "lon": 12.4829321,
+    "source": "osm"
+  },
+  "athene": {
+    "lat": 33.9597677,
+    "lon": -83.376398,
+    "source": "osm"
+  }
+}
