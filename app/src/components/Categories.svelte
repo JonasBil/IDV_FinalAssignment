@@ -1,5 +1,6 @@
 <script>
   import data from '../Streets.json';
+  import {data_en} from '../data.js';
   import PieChart from './Categories_Piecharts.svelte';
 
   //Only keep lists which have gender = female
@@ -7,6 +8,7 @@
 
   //Unique cities
   const cities = [...new Set(females.map(d => d.lau_name))].sort();
+
 
   //User selections
   let city1 = $state('');
@@ -99,17 +101,19 @@
     <select bind:value={city1}>
       <option value="">Choose…</option>
       {#each cities as c}
-        <option value={c}>{c}</option>
+        <option value={c}>
+          {data_en.find(d => d.lau_name === c)?.city_en ?? c}</option>
       {/each}
     </select>
-  </div>
+    </div>
 
   <div>
     <label>City 2</label>
     <select bind:value={city2}>
       <option value="">Choose…</option>
       {#each cities as c}
-        <option value={c}>{c}</option>
+        <option value={c}>
+          {data_en.find(d => d.lau_name === c)?.city_en ?? c}</option>
       {/each}
     </select>
   </div>
@@ -118,7 +122,7 @@
 <!-- charts -->
 <div class="charts">
   <div class="chart">
-    <h3>{city1 || "City 1"}</h3>
+    <h3>{city1 ? data_en.find(d => d.lau_name === city1)?.city_en : "City 1"}</h3>
 
     {#if top1}
       <p class="annotation-city">
@@ -132,7 +136,7 @@
   </div>
 
   <div class="chart">
-    <h3>{city2 || "City 2"}</h3>
+    <h3>{city2 ? data_en.find(d => d.lau_name === city2)?.city_en : "City 2"}</h3>
 
     {#if top2}
       <p class="annotation-city">
@@ -211,13 +215,29 @@
   }
 
   .comparison-box {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 1.2rem 1.5rem;
-    background: #f8f8ff;
-    border-radius: 8px;
-    line-height: 1.45;
-  }
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #1f2937;                 
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  line-height: 1.5;
+  color: #e5e7eb;                    
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.comparison-box h4 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  color: #f3f4f6;
+  font-size: 1.1rem;
+}
+
+.comparison-box p {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-bottom: 0.4rem;
+}
 
   .comparison-box h4 {
     margin-top: 0;
