@@ -1,14 +1,13 @@
 <script>
-  import data from '../Streets.json';
   import PieChart from './Categories_Piecharts.svelte';
+  import { lauToEnglish, lauToSlug, allCities } from '../cities.js';
 
-  //Only keep lists which have gender = female
-  const females = data.filter(d => d.gender === "female");
+  // Cities shown in dropdown
+  const cities = [...allCities].sort((a, b) => (
+    (lauToEnglish[a] ?? a).localeCompare(lauToEnglish[b] ?? b)
+  ));
 
-  //Unique cities
-  const cities = [...new Set(females.map(d => d.lau_name))].sort();
-
-  //User selections
+  // User selections
   let city1 = $state('');
   let city2 = $state('');
 
@@ -38,19 +37,42 @@
     return "others";
   }
 
-  //Cleaned dataset
-  let categories = $derived(
-    females.map(d => ({
-      ...d,
-      category_cleaned: classifyCategories(d.occupation_label, d.occupation_category)
-    }))
-  );
+  // Cache loaded per-city data in-memory to avoid re-fetches
+  const cache = new Map();
 
-  //Filter datasets by city
-  let filtered1 = $derived(city1 ? categories.filter(d => d.lau_name === city1) : []);
-  let filtered2 = $derived(city2 ? categories.filter(d => d.lau_name === city2) : []);
+  async function loadCity(lauName) {
+    if (!lauName) return [];
+    if (cache.has(lauName)) return cache.get(lauName);
+    const slug = lauToSlug[lauName];
+    if (!slug) return [];
+    const url = new URL(`../CityStreetData/${slug}_enriched.json`, import.meta.url);
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const geo = await res.json();
+    const females = (geo?.features ?? []).filter(f => f?.properties?.gender === 'female');
+    const items = females.map(f => ({
+      lau_name: lauName,
+      occupation_label: f?.properties?.occupation_label || '',
+      occupation_category: f?.properties?.occupation_category || '',
+      category_cleaned: classifyCategories(f?.properties?.occupation_label, f?.properties?.occupation_category)
+    }));
+    cache.set(lauName, items);
+    return items;
+  }
 
-  //Counts per category
+  // City-specific data (computed reactively on selection)
+  let data1 = $state([]);
+  let data2 = $state([]);
+
+  $effect(async () => {
+    data1 = await loadCity(city1);
+  });
+
+  $effect(async () => {
+    data2 = await loadCity(city2);
+  });
+
+  // Counts per category
   function countCategories(list) {
     const counts = {};
     for (const d of list) {
@@ -60,10 +82,10 @@
     return Object.entries(counts).map(([category, count]) => ({ category, count }));
   }
 
-  let pie1 = $derived([...countCategories(filtered1)]);
-  let pie2 = $derived([...countCategories(filtered2)]);
+  let pie1 = $derived([...countCategories(data1)]);
+  let pie2 = $derived([...countCategories(data2)]);
 
-  //Computing the percentages of the different categories
+  // Compute percentages for display
   function pctMap(list) {
     const total = list.reduce((s, d) => s + d.count, 0);
     const map = {};
@@ -76,7 +98,7 @@
   let pctCity1 = $derived(pctMap(pie1));
   let pctCity2 = $derived(pctMap(pie2));
 
-  //Most represented category
+  // Most represented category
   function topCategory(pctMap) {
     const entries = Object.entries(pctMap);
     if (!entries.length) return null;
@@ -87,6 +109,7 @@
   let top1 = $derived(topCategory(pctCity1));
   let top2 = $derived(topCategory(pctCity2));
 
+  const displayName = lau => lauToEnglish[lau] ?? lau;
 </script>
 
 <!-- Main Title -->
@@ -95,21 +118,21 @@
 <!-- selectors -->
 <div class="selectors">
   <div>
-    <label>City 1</label>
-    <select bind:value={city1}>
+    <label for="city1">City 1</label>
+    <select id="city1" bind:value={city1}>
       <option value="">Choose…</option>
       {#each cities as c}
-        <option value={c}>{c}</option>
+        <option value={c}>{displayName(c)}</option>
       {/each}
     </select>
-  </div>
+    </div>
 
   <div>
-    <label>City 2</label>
-    <select bind:value={city2}>
+    <label for="city2">City 2</label>
+    <select id="city2" bind:value={city2}>
       <option value="">Choose…</option>
       {#each cities as c}
-        <option value={c}>{c}</option>
+        <option value={c}>{displayName(c)}</option>
       {/each}
     </select>
   </div>
@@ -118,7 +141,7 @@
 <!-- charts -->
 <div class="charts">
   <div class="chart">
-    <h3>{city1 || "City 1"}</h3>
+    <h3>{city1 ? displayName(city1) : "City 1"}</h3>
 
     {#if top1}
       <p class="annotation-city">
@@ -132,7 +155,7 @@
   </div>
 
   <div class="chart">
-    <h3>{city2 || "City 2"}</h3>
+    <h3>{city2 ? displayName(city2) : "City 2"}</h3>
 
     {#if top2}
       <p class="annotation-city">
@@ -211,13 +234,29 @@
   }
 
   .comparison-box {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 1.2rem 1.5rem;
-    background: #f8f8ff;
-    border-radius: 8px;
-    line-height: 1.45;
-  }
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #1f2937;                 
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  line-height: 1.5;
+  color: #e5e7eb;                    
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.comparison-box h4 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  color: #f3f4f6;
+  font-size: 1.1rem;
+}
+
+.comparison-box p {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-bottom: 0.4rem;
+}
 
   .comparison-box h4 {
     margin-top: 0;
