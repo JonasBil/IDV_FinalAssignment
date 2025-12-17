@@ -1,6 +1,6 @@
 <script>
-import {unmixed_aggregated_street_data_citizenship} from './unmixed_aggregated_street_data_citizenship.js'
-import { Plot, WaffleY, AxisX} from 'svelteplot'
+import {unmixed_aggregated_street_data_citizenship} from '../unmixed_aggregated_street_data_citizenship.js'
+import { Plot, BarY } from 'svelteplot'
 import * as d3 from 'd3'
 
 // const an array of studied city names
@@ -181,17 +181,11 @@ function getBarColor(d) {
   </div>
 
   {#if Array.isArray(waffleSquares) && waffleSquares.length}
-    <Plot 
-      x={{ title: "City", label: "Studied City" }}
-      y={{ title: "Share (100 squares = 100%)", label: "Relative Frequency, 1 square = 1%", }}
-      
-      width={600}
-      height={500}
-      
-    >
-      <WaffleY data={waffleSquares} x="lau_name" y="value" fill={(d) => getBarColor(d)} />
-      <AxisX tickFontSize={15} ></AxisX>  
-    </Plot>
+    <div class="waffle-grid" aria-label="Waffle chart grid">
+      {#each waffleSquares as s, i}
+        <div class="waffle-cell" title={s.category} style="background-color: {getBarColor(s)}"></div>
+      {/each}
+    </div>
   {:else}
     <p>No data available for {Selected_city}</p>
   {/if}
@@ -247,6 +241,21 @@ h2 {font-weight: normal; font-size: 1em; color: #545454;}
   height: 12px;
   margin-right: 4px;
   border-radius: 2px;}
+
+.waffle-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 16px);
+  grid-auto-rows: 16px;
+  gap: 2px;
+  width: max-content;
+  padding: 6px 0;
+}
+
+.waffle-cell {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
 
 
 </style>
