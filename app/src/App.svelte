@@ -2,7 +2,8 @@
   import Header from './components/Header.svelte';
   import Footer from './components/Footer.svelte';
   import MapVisualization from './components/MapVisualization.svelte';
-  // import Sidebar from './components/Sidebar.svelte'
+  import Categories from './Categories.svelte';
+  import Honouredwomen from './Honouredwomen.svelte';
 </script>
 
 <div class="app-container">
@@ -10,7 +11,11 @@
   
   <main>
     <MapVisualization />
+    <Categories />
+    <Honouredwomen />
   </main>
+
+
 
   <Footer />
 </div>
