@@ -3,10 +3,12 @@
 
   const dispatch = createEventDispatcher();
 
-  let primaryBtn;
-  let secondaryBtn;
-  let modalEl;
-  let previousBodyOverflow;
+  import brownieImg from '../Figures/ChocolateChipBrownie_1200x1200.webp';
+
+    let primaryBtn;
+    let secondaryBtn;
+    let modalEl;
+    let previousBodyOverflow;
 
   function choose(value) {
     // restore body scroll immediately before dispatching so the page becomes normal
@@ -63,13 +65,19 @@
 </script>
 
 <div class="overlay" role="dialog" aria-modal="true" aria-label="Cookie choice dialog">
-  <div class="modal" bind:this={modalEl} tabindex="-1">
-    <p class="prompt">Do you accept Brownies?</p>
 
+
+     <div class="illustration" aria-hidden="true">
+          <!-- use provided brownie image from Figures -->
+          <img src={brownieImg} alt="" aria-hidden="true" class="figure-img" />
+        </div>
+  <div class="modal" bind:this={modalEl} tabindex="-1">
+    <p class="prompt">We work with Brownies</p>
     <div class="actions">
-  <button class="btn" bind:this={primaryBtn} on:click={() => choose('yes')}>Yes</button>
-      <button class="btn" bind:this={secondaryBtn} on:click={() => choose('no')}>No, I prefer Cookies 🍪</button>
+  <button class="btn" bind:this={primaryBtn} on:click={() => choose('yes')}>Accept</button>
+      <button class="btn" bind:this={secondaryBtn} on:click={() => choose('no')}>Reject, I prefer Cookies 🍪</button>
     </div>
+       
   </div>
 </div>
 
@@ -127,5 +135,16 @@
   }
 
   .btn:active { transform: translateY(1px); }
+
+  .illustration { margin-top: 1rem; }
+  .figure-img {
+    width: 340px;
+    max-width: 90vw;
+    height: auto;
+    display: block;
+    margin: 0.5rem auto 0.25rem auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.5);
+  }
 
 </style>
