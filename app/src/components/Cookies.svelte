@@ -51,11 +51,6 @@
       document.body.style.overflow = 'hidden';
     }
 
-    // focus first button on mount
-    setTimeout(() => {
-      if (primaryBtn) primaryBtn.focus();
-      else if (secondaryBtn) secondaryBtn.focus();
-    }, 0);
 
     // listen early to capture tab events
     document.addEventListener('keydown', handleKeydown, true);
@@ -72,8 +67,8 @@
     <p class="prompt">Do you accept Brownies?</p>
 
     <div class="actions">
-      <button class="btn primary" bind:this={primaryBtn} on:click={() => choose('yes')}>Yes</button>
-      <button class="btn" bind:this={secondaryBtn} on:click={() => choose('no')}>No, I prefer cookies</button>
+  <button class="btn" bind:this={primaryBtn} on:click={() => choose('yes')}>Yes</button>
+      <button class="btn" bind:this={secondaryBtn} on:click={() => choose('no')}>No, I prefer Cookies 🍪</button>
     </div>
   </div>
 </div>
@@ -124,6 +119,13 @@
     font-weight: 600;
   }
 
+  /* Make primary button turn orange on hover */
+  .btn:hover {
+    background: #fb923c; /* orange */
+    box-shadow: 0 8px 20px rgba(251,146,60,0.18);
+    transform: translateY(-1px);
+  }
+
   .btn:active { transform: translateY(1px); }
-  .btn:focus { outline: 3px solid rgba(16,185,129,0.18); }
+
 </style>
