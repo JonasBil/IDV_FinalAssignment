@@ -5,6 +5,7 @@
   import Categories from './components/Categories.svelte';
   import Honouredwomen from './components/Honouredwomen.svelte';
   import Cookies from './components/Cookies.svelte';
+  import Waffle from './components/Waffle.svelte';
 
   // show the initial prompt until the user makes a choice
   let promptVisible = true;
@@ -29,6 +30,9 @@
 
       <div class="charts-container">
         <Honouredwomen />
+      </div>
+      <div class="charts-container">
+        <Waffle/>
       </div>
     </div>
   </main>
