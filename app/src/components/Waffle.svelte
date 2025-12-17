@@ -137,27 +137,7 @@ function getBarColor(d) {
 <h1> Regional Culture found in street names</h1>
 <div class="container">
   
- <div class="facet facet-1">
-  <h2> Bar chart showing the place of birth of people with streets named to in {Selected_city} </h2>
-  
-  
-   <select class ="dropdownmenu" bind:value={Selected_city} id="city-select">
-      {#each Cities as city}
-        <option value={city}>
-          {city}
-        </option>
-      {/each}
-	  </select>
-   <Plot x={{title: "Country of Citizenship", tickRotate: 90,tickPadding: 2}} 
-         y={{title: "Named streets", label: "count", grid: true}}  
-         marginBottom={200} 
-         width={600}
-         height={500}
-          >
-    <BarY data={filtered_aggregated_data} x="country_of_citizenship_label" y="total_count_unmixed" fill={getBarColor} />  
 
- </Plot> 
- </div>
 
 
 <div class="facet facet-2">
