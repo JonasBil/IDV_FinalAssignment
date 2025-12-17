@@ -1,5 +1,5 @@
 <script>
-  import data from './Streets.json';
+  import data from '../Streets.json';
   import PieChart from './Categories_Piecharts.svelte';
 
   //Only keep lists which have gender = female

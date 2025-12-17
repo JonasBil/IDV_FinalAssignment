@@ -2,17 +2,23 @@
   import Header from './components/Header.svelte';
   import Footer from './components/Footer.svelte';
   import MapVisualization from './components/MapVisualization.svelte';
-  import Categories from './Categories.svelte';
-  import Honouredwomen from './Honouredwomen.svelte';
+  import Categories from './components/Categories.svelte';
+  import Honouredwomen from './components/Honouredwomen.svelte';
 </script>
 
 <div class="app-container">
   <Header />
   
   <main>
-    <MapVisualization />
-    <Categories />
-    <Honouredwomen />
+    <div>
+      <MapVisualization />
+    </div>
+    <div class="charts-container">
+      <Categories />
+    </div>
+    <div class="charts-container">
+      <Honouredwomen />
+    </div>
   </main>
 
 
@@ -39,5 +45,13 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  .charts-container {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: #1f2937;
   }
 </style>
