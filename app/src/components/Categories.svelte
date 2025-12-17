@@ -1,4 +1,5 @@
 <script>
+  import data from '../Streets.json';
   import PieChart from './Categories_Piecharts.svelte';
   import { lauToEnglish, lauToSlug, allCities } from '../cities.js';
 
@@ -122,7 +123,11 @@
     <select id="city1" bind:value={city1}>
       <option value="">Choose…</option>
       {#each cities as c}
+<<<<<<< HEAD
         <option value={c}>{displayName(c)}</option>
+=======
+        <option value={c}>{c}</option>
+>>>>>>> 2313a0f (Try)
       {/each}
     </select>
     </div>
@@ -132,7 +137,11 @@
     <select id="city2" bind:value={city2}>
       <option value="">Choose…</option>
       {#each cities as c}
+<<<<<<< HEAD
         <option value={c}>{displayName(c)}</option>
+=======
+        <option value={c}>{c}</option>
+>>>>>>> 2313a0f (Try)
       {/each}
     </select>
   </div>
@@ -141,7 +150,11 @@
 <!-- charts -->
 <div class="charts">
   <div class="chart">
+<<<<<<< HEAD
     <h3>{city1 ? displayName(city1) : "City 1"}</h3>
+=======
+    <h3>{city1 || "City 1"}</h3>
+>>>>>>> 2313a0f (Try)
 
     {#if top1}
       <p class="annotation-city">
@@ -155,7 +168,11 @@
   </div>
 
   <div class="chart">
+<<<<<<< HEAD
     <h3>{city2 ? displayName(city2) : "City 2"}</h3>
+=======
+    <h3>{city2 || "City 2"}</h3>
+>>>>>>> 2313a0f (Try)
 
     {#if top2}
       <p class="annotation-city">
