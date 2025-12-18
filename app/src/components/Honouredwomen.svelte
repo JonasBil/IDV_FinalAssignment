@@ -253,19 +253,6 @@
 <div class="container"> <!-- title-->
   <h2>Histogram of the date of birth of women in street names in selected cities</h2>
 
-  <!-- small dynamic caption under the title showing the mean birth years for selected cities -->
-  <p class="means small-caption" aria-live="polite">
-    {#if selectedA && meanA}
-      <span>{selectedA}: {Math.round(meanA)}</span>
-    {:else}
-      <span class="muted">Select City A to show its mean birth year.</span>
-    {/if}
-
-    {#if selectedB}
-      <span> — {selectedB}: {meanB ? Math.round(meanB) : '—'}</span>
-    {/if}
-  </p>
-
   <p class="subtitle">The histogram groups birth years into 10-year bins and counts how many honoured women
       were born in each interval. This lets us compare the age cohorts represented in street names
       between cities and spot if one city honours earlier or later-born figures.</p>
@@ -293,29 +280,32 @@
 
 <!--  canvas for chart -->
   <canvas bind:this={canvasEl}></canvas>
-<div class="explain-right">
-    <h3>Quick summary</h3>
-    {#if selectedA && selectedB}
+
+  <!-- small summary below the chart showing means and comparison -->
+  <div class="description_box" aria-live="polite">
+    {#if selectedA}
       <p>
-        {selectedA} has a mean birth year of {meanA ? Math.round(meanA) : '—'}, while {selectedB} has a mean birth year of {meanB ? Math.round(meanB) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}.
-      </p>
-      {#if meanA && meanB}
-        {#if meanA < meanB}
-          <p>On average, {selectedA} honours earlier-born women than {selectedB}.</p>
-        {:else if meanA > meanB}
-          <p>On average, {selectedB} honours earlier-born women than {selectedA}.</p>
+        {#if selectedB}
+          {selectedA} has a mean birth year of {meanA ? Math.round(meanA) : '—'}, while {selectedB} has a mean birth year of {meanB ? Math.round(meanB) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}.
         {:else}
-          <p>Both cities have the same mean birth year.</p>
+          {selectedA} has a mean birth year of {meanA ? Math.round(meanA) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}. Select City B to compare.
         {/if}
-      {/if}
 
-    {:else if selectedA}
-      <p>{selectedA} (n={getTotalForCity(selectedA)}) has a mean birth year of {meanA ? Math.round(meanA) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}. Select City B to compare.</p>
-
+        {#if selectedA && selectedB && meanA != null && meanB != null}
+          {#if meanA < meanB}
+            On average, {selectedA} honours earlier-born women than {selectedB} (lower mean).
+          {:else if meanA > meanB}
+            On average, {selectedB} honours earlier-born women than {selectedA} (lower mean).
+          {:else}
+            Both cities have the same mean birth year.
+          {/if}
+        {/if}
+      </p>
     {:else}
-      <p>Select City A to see its mean birth year and total; pick City B to compare. Overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}.</p>
+      <p>Select City A to see mean birth years and comparisons.</p>
     {/if}
   </div>
+
 </div>
  
 
@@ -354,4 +344,18 @@
     padding-left: 0.5rem; /* small inset from the container edge */
   }
   .means strong { font-weight: normal; }
+
+  /* caption below chart */
+  .chart-caption {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: #222;
+    text-align: left;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.5rem;
+  }
+  /* keep comparison text visually the same as the main sentence */
+  .chart-caption .comparison { margin-top: 0.3rem; font-style: normal; color: inherit; }
 </style>
