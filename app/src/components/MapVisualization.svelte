@@ -1,6 +1,7 @@
 <script>
   import { Plot, Geo } from 'svelteplot';
   import { geoMercator } from 'd3-geo';
+  import '../Styles.css';
 
   // Cities available in the dataset
   const cities = ['ancona', 'athene', 'barcelona', 'berlin', 'bologna', 'brussels', 'bucuresti', 'budapest', 'chisinau', 'debrecen', 'firenze', 'gdansk', 'genova', 'katowice', 'krakow', 'kyiv', 'københavn', 'lisboa', 'lyon', 'madrid', 'milano', 'munchen', 'oslo', 'palermo', 'paris', 'praha', 'roma', 'sevilla', 'sibiu', 'stockholm', 'torino', 'warszawa', 'wien', 'wrocław', 'zagreb', 'łodz'];
@@ -269,7 +270,7 @@
 
   <div class="description">
     <p>
-      This map explores gender representation in European street names, highlighting <span style="color: #fb923c; font-weight: bold;">female</span> and <span style="color: #60a5fa; font-weight: bold;">male</span> streets. 
+      This map explores gender representation in European street names, highlighting <span class="orange_bold">female</span> and <span class="blue_bold">male</span> streets. 
       Based on the Mapping Diversity project by the European Data Journalism Network, it analyzes 145,000+ streets across 30+ cities to spark debate on urban representation. The dataset includes biographical data from Wikidata for each person.
     </p>
   </div>
