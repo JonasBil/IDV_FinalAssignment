@@ -147,7 +147,7 @@ function getBarColor(d) {
             </option>
         {/each}
         </select>
-    <h2> Waffle chart showing the countries of citizenship of people who have streets named after them in {Selected_city} </h2>
+    
     <h3 class='description' > Top 20 Citizenships found by researchers include: </h3>
 
     <div class="legend">
@@ -170,6 +170,11 @@ function getBarColor(d) {
     {/if}
     </div>
 </div>
+
+<div>
+    <p class="description_box"> Waffle chart showing the countries of citizenship of people who have streets named after them in {Selected_city} </p>
+</div>
+
 </div>
 
 
@@ -177,9 +182,6 @@ function getBarColor(d) {
 
 
 /*the parent*/
-.container { width: 1300px; display: flex;     
-    gap: 28px;            
-    align-items: flex-start; font-family: "Nunito", sans-serif;font-weight: 400}
 
 /*the children*/
 .facet{width: 49%; display:inline-block;margin-left: 20px; }
