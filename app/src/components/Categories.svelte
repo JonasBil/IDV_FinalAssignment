@@ -231,7 +231,13 @@
     {/if}
 
     {#if pie1.length}
-      <PieChart data={pie1} size={250} />
+      <PieChart
+        data={pie1}
+        size={250}
+        city={city1}
+        otherCity={city2}
+        pctThis={pctCity1}
+        pctOther={pctCity2}/>
     {:else}
       <p>No occupation data available</p>
     {/if}
@@ -248,7 +254,13 @@
     {/if}
 
     {#if pie2.length}
-      <PieChart data={pie2} size={250} />
+      <PieChart
+        data={pie2}
+        size={250}
+        city={city2}
+        otherCity={city1}
+        pctThis={pctCity2}
+        pctOther={pctCity1}/>
     {:else}
       <p>No occupation data available</p>
     {/if}
@@ -260,23 +272,6 @@
   in their street names. Streets are excluded only when no occupation information
   is available in either textual labels or Wikidata occupation categories.
 </p>
-
-{#if city1 && city2}
-  <div class="comparison-box">
-    <h4>How do your chosen cities differ?</h4>
-
-    {#each Object.keys(pctCity1) as c}
-      {#if pctCity2[c] !== undefined}
-        <p>
-          {c} is
-          {Math.abs(pctCity1[c] - pctCity2[c]).toFixed(1)}%
-          {pctCity1[c] > pctCity2[c] ? " higher" : " lower"}
-          in {city1} than in {city2}.
-        </p>
-      {/if}
-    {/each}
-  </div>
-{/if}
 
 <style>
   .main-title {
