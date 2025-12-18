@@ -100,7 +100,7 @@
 </div>
 
 
-<!--        STYLES         -->
+<!--STYLES-->
 <style>
   .chart-wrapper {
     position: relative;
