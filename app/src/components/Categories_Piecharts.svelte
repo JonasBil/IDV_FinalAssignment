@@ -32,7 +32,7 @@
     politics: "#FFC20A",
     religion: "#00668E",
     military: "#FF9920",
-    science: "#2CA02C",
+    science: "#EF553B",
     others: "#9E48D0"
   };
 </script>

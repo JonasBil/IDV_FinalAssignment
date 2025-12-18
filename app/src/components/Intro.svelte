@@ -5,7 +5,7 @@
     In <strong>Paris</strong>, 2,725 streets are named after people.
     <strong>2,569</strong> honour men, while <strong>156</strong> are named after women, which correspond to <strong>6%</strong>. In <strong>Debrecen</strong>, the imbalance is even sharper. Out of 273 eponymic streets, <strong>265</strong> are named after men
     and just <strong>8</strong> after women, less than <strong>3%</strong>. Beyond numbers, the occupation of these women who are remembered in the streets differs too. In Paris, most streets are associated with <strong>culture</strong>
-    (<strong>37.2%</strong>), while in Debrecen nearly half (<strong>44.4%</strong>) are linked to <strong>politics</strong>.
+    (<strong>36%</strong>), while in Debrecen nearly half (<strong>44.4%</strong>) are linked to <strong>politics</strong>.
   </p>
 
   <p class="cta">
