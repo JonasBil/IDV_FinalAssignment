@@ -2,23 +2,16 @@
   import data from '../Streets.json';
   import PieChart from './Categories_Piecharts.svelte';
 
-  // ─────────────────────────────────────────────
-  // 1. Keep only streets named after women
-  // ─────────────────────────────────────────────
+  // Only keep lists which have gender = female
   const females = data.filter(d => d.gender === "female");
 
-  // ─────────────────────────────────────────────
-  // 2. Unique cities
-  // ─────────────────────────────────────────────
+  // Unique cities
   const cities = [...new Set(females.map(d => d.lau_name))].sort();
 
   let city1 = $state('');
   let city2 = $state('');
 
-  // ─────────────────────────────────────────────
-  // 3. Valid occupation filter
-  //    → keep if label OR category exists
-  // ─────────────────────────────────────────────
+  //Valid occupation filter => keep if label OR category exists
   function hasValidOccupation(d) {
     const label = (d.occupation_label || "").trim().toLowerCase();
     const category = (d.occupation_category || "").trim().toLowerCase();
@@ -40,7 +33,6 @@
 
   const has = kw => parts.includes(kw);
 
-  // Military
   if (
     has("military") ||
     l.includes("soldier") ||
@@ -55,7 +47,6 @@
     l.includes("veteran")
   ) return "military";
 
-  // Politics
   if (
     has("politics and government") ||
     l.includes("politician") ||
@@ -75,7 +66,6 @@
     l.includes("regent")
   ) return "politics";
 
-  // Religion
   if (
     has("religion") ||
     l.includes("saint") ||
@@ -88,7 +78,6 @@
     l.includes("religious leader")
   ) return "religion";
 
-  // Sciences
   if (
     has("science") ||
     l.includes("scientist") ||
@@ -108,7 +97,6 @@
     l.includes("academic")
   ) return "science";
 
-  // Culture
   if (
     has("culture, arts") ||
     l.includes("writer") ||
@@ -139,8 +127,7 @@
   return "others";
 }
 
-
-  // Cleaned dataset
+  //Cleaned dataset
   let categories = $derived(
     females
       .filter(hasValidOccupation)
@@ -162,7 +149,7 @@
     city2 ? categories.filter(d => d.lau_name === city2) : []
   );
 
-  // Count categories
+  //Count categories
   function countCategories(list) {
     const counts = {};
     for (const d of list) {
@@ -178,7 +165,7 @@
   let pie1 = $derived(countCategories(filtered1));
   let pie2 = $derived(countCategories(filtered2));
 
-  // Percentages
+  //Percentages
   function pctMap(list) {
     const total = list.reduce((s, d) => s + d.count, 0);
     const map = {};
@@ -191,7 +178,7 @@
   let pctCity1 = $derived(pctMap(pie1));
   let pctCity2 = $derived(pctMap(pie2));
 
-  // Most represented category
+  //Most represented category
   function topCategory(pctMap) {
     const entries = Object.entries(pctMap);
     if (!entries.length) return null;
@@ -248,8 +235,7 @@
     {:else}
       <p>No occupation data available</p>
     {/if}
-  </div>
-
+    </div>
   <div class="chart">
     <h3>{city2 || "City 2"}</h3>
 
