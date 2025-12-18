@@ -13,6 +13,7 @@
   let meanA = null;
   let meanB = null;
   let meanAll = null;
+  const binSize = 10;
   let error = null;
 
   // Try to extract a 4-digit year from various date_of_birth formats
@@ -239,20 +240,6 @@
         count += n;}}
     return count ? total / count : null;}
 
-  // Return total count of women for a given city in the summary
-  function getTotalForCity(city) {
-    if (!city || !summary) return 0;
-    const obj = summary[city];
-    if (!obj) return 0;
-    if (obj.total) return Number(obj.total) || 0;
-    const years = obj.years || obj;
-    let sum = 0;
-    for (const k of Object.keys(years || {})) {
-      sum += Number(years[k] || 0);
-    }
-    return sum;
-  }
-
   // Load data once the component is created 
   onMount(loadSummary);
 
@@ -263,10 +250,12 @@
 
 </script>
 
-<h1 class="main-title"> Birth year of honoured women in street names</h1>
-<h2 class="subtitle">  The histogram groups birth years into 10-year bins and counts how many honoured women
-      were born in each interval. This lets us compare the age cohorts represented in street names
-      between cities and spot if one city honours earlier or later-born figures. </h2> 
+<div class="container"> <!-- title-->
+  <h2>Histogram of the date of birth of women in street names in selected cities</h2>
+
+  {#if error}  <!-- in case an error occurs this message shows up -->
+    <p style="color:crimson">Error loading data: {error}</p>
+  {/if}
 
   <div class="controls">  <!-- labels for the selectors -->
     <label for="cityA">City A:</label>
@@ -285,51 +274,17 @@
     </select>
   </div>
 
-<!-- layout: left explanation | chart | right city numbers -->
-<div class="chart-row">
-  <div class="explain-left">
-    <h3>What this plot shows</h3>
-  </div>
-
-  <div class="chart-area">
-    <canvas bind:this={canvasEl}></canvas>
-   
-  </div>
-
-  <div class="explain-right">
-    <h3>Quick summary</h3>
-    {#if selectedA && selectedB}
-      <p>
-        {selectedA} has a mean birth year of {meanA ? Math.round(meanA) : '—'}, while {selectedB} has a mean birth year of {meanB ? Math.round(meanB) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}.
-      </p>
-      {#if meanA && meanB}
-        {#if meanA < meanB}
-          <p>On average, {selectedA} honours earlier-born women than {selectedB}.</p>
-        {:else if meanA > meanB}
-          <p>On average, {selectedB} honours earlier-born women than {selectedA}.</p>
-        {:else}
-          <p>Both cities have the same mean birth year.</p>
-        {/if}
-      {/if}
-
-    {:else if selectedA}
-      <p>{selectedA} (n={getTotalForCity(selectedA)}) has a mean birth year of {meanA ? Math.round(meanA) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}. Select City B to compare.</p>
-
-    {:else}
-      <p>Select City A to see its mean birth year and total; pick City B to compare. Overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}.</p>
-    {/if}
-  </div>
+<!--  canvas for chart -->
+  <canvas bind:this={canvasEl}></canvas>
+  <!-- Displaying a small text to show the mean year value of a chosen city-->
+  <div class="means">
+    <div> Women in <strong>{selectedA} have a mean birth year of:</strong> {meanA ? Math.round(meanA) : '—'} and in <strong> {selectedB}:</strong> {meanB ? Math.round(meanB) : '—'}. <strong> The mean birth year over all cities is:</strong> {meanAll ? Math.round(meanAll) : '—'}. 
+    </div>
+    </div> 
 </div>
  
 
 <style>
-    .main-title {
-    text-align: center;
-    font-size: 1.9rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-  }
-
   .container {
     max-width: 1000px;
     margin: 1.5rem auto;
@@ -346,22 +301,6 @@
     width: 100%;
     height: 420px;
   }
-  .chart-row {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    margin-top: 1rem;
-  }
-  .explain-left, .explain-right {
-    width: 22%;
-    background: #f8fafc;
-    color: #111827;
-    padding: 0.75rem;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    line-height: 1.4;
-  }
-  .chart-area { flex: 1 1 auto; }
   /* place mean text left-aligned under the graph and remove bold styling */
   .means {
     margin-top: 0.5rem;
