@@ -12,7 +12,6 @@
   let city2 = $state('');
 
   //Valid occupation filter => keep if label OR category exists
-
   function hasValidOccupation(d) {
     const label = (d.occupation_label || "").trim().toLowerCase();
     const category = (d.occupation_category || "").trim().toLowerCase();
@@ -128,7 +127,6 @@
   return "others";
 }
 
-
   //Cleaned dataset
   let categories = $derived(
     females
@@ -237,8 +235,7 @@
     {:else}
       <p>No occupation data available</p>
     {/if}
-  </div>
-
+    </div>
   <div class="chart">
     <h3>{city2 || "City 2"}</h3>
 
