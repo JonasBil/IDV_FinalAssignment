@@ -2,6 +2,7 @@
 import {unmixed_aggregated_street_data_citizenship} from '../unmixed_aggregated_street_data_citizenship.js'
 import { Plot, WaffleY, AxisX } from 'svelteplot'
 import * as d3 from 'd3'
+import WaffleMask from '../Figures/waffle-mask.svg?raw'; // Import SVG as raw text
 
 // const an array of studied city names
 const Cities = Array.from(new Set(unmixed_aggregated_street_data_citizenship.map(d => d.lau_name))).sort(); 
@@ -165,7 +166,30 @@ function getBarColor(d) {
       width={600}
       height={500}
     >
-      <WaffleY data={waffleSquares} x="lau_name" y="value" fill={(d) => getBarColor(d)} />
+     <svg slot="defs" style="position: absolute; width: 0; height: 0;">
+      <defs>
+        <g id="waffle-icon">
+          {@html WaffleMask}
+        </g>
+      </defs>
+    </svg>
+
+      <!-- <WaffleY data={waffleSquares} x="lau_name" y="value" fill={(d) => getBarColor(d)} /> -->
+
+       <WaffleY 
+      data={waffleSquares} 
+      x="lau_name" 
+      y="value" 
+      fill={(d) => getBarColor(d)}
+      render={(selection) => {
+        selection
+          .append('use')
+          .attr('href', '#waffle-icon')
+          .attr('width', 10)  // Adjust size as needed
+          .attr('height', 10) // Adjust size as needed
+          .attr('x', -5)      // Center the icon
+          .attr('y', -5);     // Center the icon
+      }}/>
       <AxisX tickFontSize={15} />
     </Plot>
   {:else}
