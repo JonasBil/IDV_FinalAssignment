@@ -7,6 +7,7 @@
   import Cookies from './components/Cookies.svelte';
   import Waffle from './components/Waffle.svelte';
   import Intro from './components/Intro.svelte';
+  import './Styles.css'
 
   // show the initial prompt until the user makes a choice
   let promptVisible = true;
@@ -33,7 +34,7 @@
       <div class="charts-container">
         <Honouredwomen />
       </div>
-      <div class="charts-container">
+      <div>
         <Waffle/>
       </div>
     </div>

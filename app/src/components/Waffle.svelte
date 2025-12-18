@@ -1,6 +1,7 @@
 <script>
 import {unmixed_aggregated_street_data_citizenship} from '../unmixed_aggregated_street_data_citizenship.js'
 import { Plot, BarY } from 'svelteplot'
+import '../Styles.css'
 import * as d3 from 'd3'
 
 // const an array of studied city names
@@ -137,40 +138,38 @@ function getBarColor(d) {
 <h1> Regional Culture found in street names</h1>
 <div class="container">
   
+<div class=charts-container>
+    <div class="facet facet-2">
+    Select a city to inspect: <select class ="dropdownmenu"  bind:value={Selected_city} id="city-select">
+        {#each Cities as city}
+            <option value={city}>
+            {city}
+            </option>
+        {/each}
+        </select>
+    <h2> Waffle chart showing the countries of citizenship of people who have streets named after them in {Selected_city} </h2>
+    <h3 class='description' > Top 20 Citizenships found by researchers include: </h3>
 
-
-
-<div class="facet facet-2">
-  Select a city to inspect: <select class ="dropdownmenu"  bind:value={Selected_city} id="city-select">
-      {#each Cities as city}
-        <option value={city}>
-          {city}
-        </option>
-      {/each}
-	  </select>
-  <h2> Waffle chart showing the countries of citizenship of people who have streets named after them in {Selected_city} </h2>
-  <h3 class='description' > Top 20 Citizenships found by researchers include: </h3>
-
-  <div class="legend">
-    {#each filtered_aggregated_data as item}
-      <div class="legend-item">
-        <span class="swatch" style="background-color: {getBarColor({country_of_citizenship_label: item.country_of_citizenship_label})}"></span>
-        <span>{item.country_of_citizenship_label}</span>
-      </div>
-    {/each}
-  </div>
-
-  {#if Array.isArray(waffleSquares) && waffleSquares.length}
-    <div class="waffle-grid" aria-label="Waffle chart grid">
-      {#each waffleSquares as s, i}
-        <div class="waffle-cell" title={s.category} style="background-color: {getBarColor(s)}"></div>
-      {/each}
+    <div class="legend">
+        {#each filtered_aggregated_data as item}
+        <div class="legend-item">
+            <span class="swatch" style="background-color: {getBarColor({country_of_citizenship_label: item.country_of_citizenship_label})}"></span>
+            <span>{item.country_of_citizenship_label}</span>
+        </div>
+        {/each}
     </div>
-  {:else}
-    <p>No data available for {Selected_city}</p>
-  {/if}
-</div>
 
+    {#if Array.isArray(waffleSquares) && waffleSquares.length}
+        <div class="waffle-grid" aria-label="Waffle chart grid">
+        {#each waffleSquares as s, i}
+            <div class="waffle-cell" title={s.category} style="background-color: {getBarColor(s)}"></div>
+        {/each}
+        </div>
+    {:else}
+        <p>No data available for {Selected_city}</p>
+    {/if}
+    </div>
+</div>
 </div>
 
 
