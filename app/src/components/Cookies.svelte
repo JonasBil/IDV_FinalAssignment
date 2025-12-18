@@ -3,7 +3,7 @@
 
   const dispatch = createEventDispatcher();
 
-  import brownieImg from '../Figures/ChocolateChipBrownie_1200x1200.webp';
+  import brownieImg from '../Figures/brownie-clipart-lg.png';
 
     let primaryBtn;
     let secondaryBtn;
@@ -67,12 +67,12 @@
 <div class="overlay" role="dialog" aria-modal="true" aria-label="Cookie choice dialog">
 
 
-     <div class="illustration" aria-hidden="true">
-          <!-- use provided brownie image from Figures -->
-          <img src={brownieImg} alt="" aria-hidden="true" class="figure-img" />
-        </div>
   <div class="modal" bind:this={modalEl} tabindex="-1">
-    <p class="prompt">We work with Brownies</p>
+    <div class="illustration" aria-hidden="true">
+      <!-- use provided brownie image from Figures -->
+      <img src={brownieImg} alt="" aria-hidden="true" class="figure-img" />
+    </div>
+    <p class="prompt">We work with Brownies.</p>
     <div class="actions">
   <button class="btn" bind:this={primaryBtn} on:click={() => choose('yes')}>Accept</button>
       <button class="btn" bind:this={secondaryBtn} on:click={() => choose('no')}>Reject, I prefer Cookies 🍪</button>
@@ -95,7 +95,7 @@
 
   .modal {
     width: 100%;
-    max-width: 480px;
+    max-width: 600px;
     background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
     border-radius: 10px;
     padding: 1.5rem;
@@ -136,15 +136,18 @@
 
   .btn:active { transform: translateY(1px); }
 
-  .illustration { margin-top: 1rem; }
+
+  /* keep the brownie fully inside the modal box */
+  .modal { position: relative; padding-top: 1rem; }
+  .illustration { position: static; margin-bottom: 0.6rem; text-align: center; }
   .figure-img {
-    width: 340px;
-    max-width: 90vw;
+    width: 160px;
+    max-width: 80vw;
     height: auto;
-    display: block;
-    margin: 0.5rem auto 0.25rem auto;
+    display: inline-block;
+    margin: 0 auto 0.5rem auto;
     border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(2,6,23,0.5);
+    box-shadow: 0 8px 20px rgba(2,6,23,0.35);
   }
 
 </style>
