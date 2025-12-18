@@ -99,15 +99,7 @@
     <select bind:value={city1}>
       <option value="">Choose…</option>
       {#each cities as c}
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <option value={c}>{displayName(c)}</option>
-=======
         <option value={c}>{c}</option>
->>>>>>> 2313a0f (Try)
-=======
-        <option value={c}>{c}</option>
->>>>>>> 124c5b3 (Aanpassingen terug naar oude)
       {/each}
     </select>
   </div>
@@ -117,15 +109,7 @@
     <select bind:value={city2}>
       <option value="">Choose…</option>
       {#each cities as c}
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <option value={c}>{displayName(c)}</option>
-=======
         <option value={c}>{c}</option>
->>>>>>> 2313a0f (Try)
-=======
-        <option value={c}>{c}</option>
->>>>>>> 124c5b3 (Aanpassingen terug naar oude)
       {/each}
     </select>
   </div>
@@ -134,15 +118,7 @@
 <!-- charts -->
 <div class="charts">
   <div class="chart">
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <h3>{city1 ? displayName(city1) : "City 1"}</h3>
-=======
     <h3>{city1 || "City 1"}</h3>
->>>>>>> 2313a0f (Try)
-=======
-    <h3>{city1 || "City 1"}</h3>
->>>>>>> 124c5b3 (Aanpassingen terug naar oude)
 
     {#if top1}
       <p class="annotation-city">
@@ -156,15 +132,7 @@
   </div>
 
   <div class="chart">
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <h3>{city2 ? displayName(city2) : "City 2"}</h3>
-=======
     <h3>{city2 || "City 2"}</h3>
->>>>>>> 2313a0f (Try)
-=======
-    <h3>{city2 || "City 2"}</h3>
->>>>>>> 124c5b3 (Aanpassingen terug naar oude)
 
     {#if top2}
       <p class="annotation-city">
