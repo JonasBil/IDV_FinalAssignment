@@ -32,6 +32,7 @@
     politics: "#FFC20A",
     religion: "#00668E",
     military: "#FF9920",
+    science: "#2CA02C",
     others: "#9E48D0"
   };
 </script>
@@ -102,18 +103,25 @@
 
   .tooltip {
     position: absolute;
-    top: 0px;
+    top: -10px;
     left: 50%;
-    transform: translate(-50%, -100%);
-    background: white;
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 0.85rem;
-    text-align: center;
+    transform: translateX(-50%);
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    color: #e5e7eb;
+    line-height: 1.2;
     pointer-events: none;
     white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+
+  .tooltip strong {
+    font-weight: 600;
+    color: #f3f4f6;
   }
 
   .legend {
