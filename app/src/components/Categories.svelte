@@ -211,13 +211,29 @@
   }
 
   .comparison-box {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 1.2rem 1.5rem;
-    background: #f8f8ff;
-    border-radius: 8px;
-    line-height: 1.45;
-  }
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #1f2937;                 
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  line-height: 1.5;
+  color: #e5e7eb;                    
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.comparison-box h4 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  color: #f3f4f6;
+  font-size: 1.1rem;
+}
+
+.comparison-box p {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-bottom: 0.4rem;
+}
 
   .comparison-box h4 {
     margin-top: 0;
