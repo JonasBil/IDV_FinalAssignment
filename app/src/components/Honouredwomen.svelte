@@ -253,6 +253,23 @@
 <div class="container"> <!-- title-->
   <h2>Histogram of the date of birth of women in street names in selected cities</h2>
 
+  <!-- small dynamic caption under the title showing the mean birth years for selected cities -->
+  <p class="means small-caption" aria-live="polite">
+    {#if selectedA && meanA}
+      <span>{selectedA}: {Math.round(meanA)}</span>
+    {:else}
+      <span class="muted">Select City A to show its mean birth year.</span>
+    {/if}
+
+    {#if selectedB}
+      <span> — {selectedB}: {meanB ? Math.round(meanB) : '—'}</span>
+    {/if}
+  </p>
+
+  <p class="subtitle">The histogram groups birth years into 10-year bins and counts how many honoured women
+      were born in each interval. This lets us compare the age cohorts represented in street names
+      between cities and spot if one city honours earlier or later-born figures.</p>
+
   {#if error}  <!-- in case an error occurs this message shows up -->
     <p style="color:crimson">Error loading data: {error}</p>
   {/if}
@@ -276,11 +293,29 @@
 
 <!--  canvas for chart -->
   <canvas bind:this={canvasEl}></canvas>
-  <!-- Displaying a small text to show the mean year value of a chosen city-->
-  <div class="means">
-    <div> Women in <strong>{selectedA} have a mean birth year of:</strong> {meanA ? Math.round(meanA) : '—'} and in <strong> {selectedB}:</strong> {meanB ? Math.round(meanB) : '—'}. <strong> The mean birth year over all cities is:</strong> {meanAll ? Math.round(meanAll) : '—'}. 
-    </div>
-    </div> 
+<div class="explain-right">
+    <h3>Quick summary</h3>
+    {#if selectedA && selectedB}
+      <p>
+        {selectedA} has a mean birth year of {meanA ? Math.round(meanA) : '—'}, while {selectedB} has a mean birth year of {meanB ? Math.round(meanB) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}.
+      </p>
+      {#if meanA && meanB}
+        {#if meanA < meanB}
+          <p>On average, {selectedA} honours earlier-born women than {selectedB}.</p>
+        {:else if meanA > meanB}
+          <p>On average, {selectedB} honours earlier-born women than {selectedA}.</p>
+        {:else}
+          <p>Both cities have the same mean birth year.</p>
+        {/if}
+      {/if}
+
+    {:else if selectedA}
+      <p>{selectedA} (n={getTotalForCity(selectedA)}) has a mean birth year of {meanA ? Math.round(meanA) : '—'}. The overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}. Select City B to compare.</p>
+
+    {:else}
+      <p>Select City A to see its mean birth year and total; pick City B to compare. Overall mean across all cities is {meanAll ? Math.round(meanAll) : '—'}.</p>
+    {/if}
+  </div>
 </div>
  
 
@@ -296,6 +331,13 @@
     gap: 12px;
     align-items: center;
     margin-bottom: 12px;
+  }
+  .subtitle {
+    font-size: 0.95rem;
+    color: #6b7280; /* subtle gray */
+    margin-top: 0.25rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
   }
   canvas {
     width: 100%;
