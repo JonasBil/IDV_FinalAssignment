@@ -282,7 +282,7 @@
   and <span class="cat others">others</span>.
   Differences in the distributions highlight how cities vary in the types of achievements and
   social roles through which women are commemorated in the urban landscape.
-  Hover over pie segments to see exact percentages.
+  Hover over the pie segments to see exact percentages.
   </p>
 </div>
 

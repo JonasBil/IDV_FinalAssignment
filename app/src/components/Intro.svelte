@@ -9,11 +9,12 @@
   </p>
 
   <p>
-    To illustrate this, the comparison between <strong>Paris</strong> and <strong>Debrecen</strong> could be taken as an example. 
-    In <strong>Paris</strong>, 2.725 streets are named after people.
-    <strong>2.569</strong> honour men, while <strong>156</strong> are named after women, which correspond to <strong>6%</strong>. In <strong>Debrecen</strong>, the imbalance is even sharper. Out of 273 eponymic streets, <strong>265</strong> are named after men
-    and just <strong>8</strong> after women, this is less than <strong>3%</strong>. Beyond numbers, the occupation of these women who are remembered in the streets differs too. In Paris, most streets are associated with <strong>culture</strong>
-    (<strong>36%</strong>), while in Debrecen nearly half (<strong>44.4%</strong>) are linked to <strong>politics</strong>. 
+
+    To illustrate this, the comparison between <strong>Brussels</strong> and <strong>Debrecen</strong> could be taken as an example. 
+    In <strong>Brussels</strong>, 1.840 streets are named after people, <strong>1.724</strong> honour  <span class="blue_bold">men</span>, while <strong>116</strong> are named after <span class="orange_bold">women</span>, which correspond to <strong>6,3%</strong>. 
+    In <strong>Debrecen</strong>, the imbalance is even sharper. Out of 273 eponymic streets, <strong>265</strong> are named after <span class="blue_bold">men</span>
+    and just <strong>8</strong> after <span class="orange_bold">women</span>, this is less than <strong>3%</strong>. Beyond numbers, the occupation of these women who are remembered in the streets differs too. In Paris, most streets are associated with <strong>culture</strong>,
+    (<strong>40,4%</strong>), while in Debrecen nearly half (<strong>44.4%</strong>) are linked to <strong>politics</strong>. 
     The mean birth year for Paris is <strong>1868</strong>, while for Debrecen it is <strong>1866</strong>.
   </p>
 
@@ -35,7 +36,17 @@
     font-size: 0.95rem;
     color: #9ca3af;
     font-style: italic;
-}
+  }
+  .cat {
+  font-weight: 600;
+  }
 
+  /* category colors same as legend */
+  .culture  { color: #17BECF; }
+  .politics { color: #FFC20A; }
+  .religion { color: #00668E; }
+  .science  { color: #EF553B; }
+  .military { color: #FF9920; }
+  .others   { color: #9E48D0; }
 </style>
 
