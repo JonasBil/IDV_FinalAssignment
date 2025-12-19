@@ -305,4 +305,8 @@
     color: #f3f4f6;
     text-transform: capitalize;
   }
+
+   .slider-control { display: flex; align-items: center; gap: 0.5rem; background: #1f2937; padding: 0.5rem 1rem; border-radius: 0.25rem; border: 1px solid #374151; }
+  .slider-control label { font-size: 0.9rem; font-weight: 500; }
+  .slider-control input[type=range] { width: 100px; accent-color: #fb923c; cursor: pointer; }
 </style>
