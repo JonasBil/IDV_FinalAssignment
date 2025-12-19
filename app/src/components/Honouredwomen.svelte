@@ -2,6 +2,7 @@
   import Streets from "../Streets.json";
   import { Plot, BarY, GridY, RuleY, groupX } from "svelteplot";
   import '../Styles.css'
+
   // Bin size in years for the histogram
   const binSize = 10;
 
@@ -156,8 +157,9 @@
       <GridY />
       <RuleY data={[0]} />
       <BarY
+      stroke="white" strokeWidth={0.8}
         {...groupX(
-          { data: rows, x: "bin", y: "count", fill: "city", stroke: "white", strokeWidth: 0.8 },
+          { data: rows, x: "bin", y: "count", fill: "city"},
           { y: "sum" }
         )}
       />
@@ -198,8 +200,6 @@
   </div>
 
 <style>
-  
   .controls { display: flex; gap: 12px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
   .plot { width: 100%; }
-
 </style>
