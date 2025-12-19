@@ -1,6 +1,7 @@
 <script>
   import data from '../Streets.json';
   import PieChart from './Categories_Piecharts.svelte';
+  import { selectedCities } from '../stores/compareSelection.js';
 
   // Only keep lists which have gender = female
   const females = data.filter(d => d.gender === "female");
@@ -8,8 +9,39 @@
   // Unique cities
   const cities = [...new Set(females.map(d => d.lau_name))].sort();
 
-  let city1 = $state('');
-  let city2 = $state('');
+  const CITY_ALIASES = {
+    // Common diacritics/English variants
+    'muenchen': 'munchen',
+    'münchen': 'munchen',
+    'munich': 'munchen',
+    'athen': 'athene',
+    'athens': 'athene',
+    'gdańsk': 'gdansk',
+    'gdansk': 'gdansk',
+    'łódź': 'łodz',
+    'lodz': 'łodz',
+    'kobenhavn': 'københavn'
+  };
+
+  function normalizeCityKey(name) {
+    const raw = (name ?? '').toString().trim().toLowerCase();
+    if (!raw) return '';
+
+    const directAlias = CITY_ALIASES[raw];
+    if (directAlias) return directAlias;
+
+    const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
+    const strippedAlias = CITY_ALIASES[stripped];
+    return strippedAlias || stripped;
+  }
+
+  const cityKeyToCity = new Map(
+    cities.map((c) => [normalizeCityKey(c), c])
+  );
+
+  const selectedKeys = $derived($selectedCities || []);
+  const city1 = $derived(cityKeyToCity.get(normalizeCityKey(selectedKeys[0])) || '');
+  const city2 = $derived(cityKeyToCity.get(normalizeCityKey(selectedKeys[1])) || '');
 
   //Valid occupation filter => keep if label OR category exists
   function hasValidOccupation(d) {
@@ -200,22 +232,12 @@
   <div class="selectors">
     <div>
       <label>City 1</label><br />
-      <select bind:value={city1}>
-        <option value="">Choose…</option>
-        {#each cities as c}
-          <option value={c}>{c}</option>
-        {/each}
-      </select>
+      <strong>{city1 || '(select on map)'}</strong>
     </div>
 
     <div>
       <label>City 2</label><br />
-      <select bind:value={city2}>
-        <option value="">Choose…</option>
-        {#each cities as c}
-          <option value={c}>{c}</option>
-        {/each}
-      </select>
+      <strong>{city2 || '(optional)'}</strong>
     </div>
   </div>
 

@@ -1,14 +1,39 @@
 <script>
   import Streets from "../Streets.json";
   import { Plot, BarY, GridY, RuleY, groupX } from "svelteplot";
+  import { selectedCities } from "../stores/compareSelection.js";
   import '../Styles.css'
 
   // Bin size in years for the histogram
   const binSize = 10;
 
-// Selected cities for comparison
-  let selectedA = "";
-  let selectedB = "";
+  // Selected cities for comparison (driven by MapSelection via store)
+
+  const CITY_ALIASES = {
+    // Common diacritics/English variants
+    'muenchen': 'munchen',
+    'münchen': 'munchen',
+    'munich': 'munchen',
+    'athen': 'athene',
+    'athens': 'athene',
+    'gdańsk': 'gdansk',
+    'gdansk': 'gdansk',
+    'łódź': 'łodz',
+    'lodz': 'łodz',
+    'kobenhavn': 'københavn'
+  };
+
+  function normalizeCityKey(name) {
+    const raw = (name ?? '').toString().trim().toLowerCase();
+    if (!raw) return '';
+
+    const directAlias = CITY_ALIASES[raw];
+    if (directAlias) return directAlias;
+
+    const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
+    const strippedAlias = CITY_ALIASES[stripped];
+    return strippedAlias || stripped;
+  }
 
 // Extract year from date_of_birth field
   function extractYearFromDob(dob) {
@@ -41,7 +66,14 @@
   const summary = buildSummary(Streets);
 
   const cityOptions = Object.keys(summary).sort();
-  selectedA = cityOptions[0] || "";
+
+  const cityKeyToSummaryCity = new Map(
+    cityOptions.map((c) => [normalizeCityKey(c), c])
+  );
+
+  const selectedKeys = $derived($selectedCities || []);
+  const selectedA = $derived(cityKeyToSummaryCity.get(normalizeCityKey(selectedKeys[0])) || "");
+  const selectedB = $derived(cityKeyToSummaryCity.get(normalizeCityKey(selectedKeys[1])) || "");
 
   function buildPlotRows(cityA, cityB) {
     const yearsA = summary[cityA] || {};
@@ -111,43 +143,70 @@
     return count ? total / count : null;
   }
 
-// Initialize reactive variables for plot data and means
-  let rows = [];
-  let meanA = null;
-  let meanB = null;
-  let meanAllCities = null;
-// Reactive updates when selected cities change
-  $: rows = selectedA ? buildPlotRows(selectedA, selectedB) : [];
-  $: meanA = selectedA ? meanFromYears(summary[selectedA]) : null;
-  $: meanB = selectedB ? meanFromYears(summary[selectedB]) : null;
-  $: meanAllCities = meanAll(summary);
+  // Derived values (runes mode)
+  const rows = $derived(selectedA ? buildPlotRows(selectedA, selectedB) : []);
+  const meanA = $derived(selectedA ? meanFromYears(summary[selectedA]) : null);
+  const meanB = $derived(selectedB ? meanFromYears(summary[selectedB]) : null);
+  const meanAllCities = meanAll(summary);
+
+  // Hover tooltip for bars
+  let plotWrap;
+  let hoveredBin = $state(null);
+  let hoverPos = $state({ x: 0, y: 0 });
+
+  const countsByBin = $derived((() => {
+    const m = Object.create(null);
+    for (const r of rows) {
+      if (!r?.bin) continue;
+      m[r.bin] ??= Object.create(null);
+      m[r.bin][r.city] = r.count;
+    }
+    return m;
+  })());
+
+  function updateHover(event, datum) {
+    hoveredBin = datum?.bin ?? null;
+    if (!plotWrap) return;
+    const r = plotWrap.getBoundingClientRect();
+    hoverPos = {
+      x: event.clientX - r.left + 10,
+      y: event.clientY - r.top + 10
+    };
+  }
+
+  function clearHover() {
+    hoveredBin = null;
+  }
 </script>
 <!-- Title -->
 <div class="header">
   <h1>Histogram of the date of birth of women in street names in selected cities</h1>
 </div>
 
-<!-- selectors -->
+<!-- selection (from map) -->
 <div class="controls">
-  <label for="cityA">City A:</label>
-  <select id="cityA" bind:value={selectedA}>
-    {#each cityOptions as c}
-      <option value={c}>{c}</option>
-    {/each}
-  </select>
-
-  <label for="cityB">City B:</label>
-  <select id="cityB" bind:value={selectedB}>
-    <option value="">(none)</option>
-    {#each cityOptions as c}
-      <option value={c}>{c}</option>
-    {/each}
-  </select>
+  <div>City A: <strong>{selectedA || '(select on map)'}</strong></div>
+  <div>City B: <strong>{selectedB || '(optional)'}</strong></div>
 </div>
 
 <!-- plot -->
 {#if selectedA && rows.length}
-  <div class="plot">
+  <div class="plot" bind:this={plotWrap}>
+    {#if hoveredBin}
+      <div class="bar-tooltip" style={`left:${hoverPos.x}px; top:${hoverPos.y}px;`}>
+        <div><strong>Count (women)</strong></div>
+
+        <div>
+          {selectedA}: {countsByBin?.[hoveredBin]?.[selectedA] ?? 0}
+        </div>
+
+        {#if selectedB}
+          <div>
+            {selectedB}: {countsByBin?.[hoveredBin]?.[selectedB] ?? 0}
+          </div>
+        {/if}
+      </div>
+    {/if}
   <Plot
   height={420}
   color={{
@@ -162,6 +221,9 @@
       <RuleY data={[0]} />
       <BarY
       stroke="white" strokeWidth={0.8}
+      onmouseover={updateHover}
+      onmousemove={updateHover}
+      onmouseleave={clearHover}
         {...groupX(
           { data: rows, x: "bin", y: "count", fill: "city"},
           { y: "sum" }
@@ -171,7 +233,7 @@
   </div>
 {:else}
 
-  <p>Select City A to show the chart.</p>
+  <p>Select City A on the map to show the chart.</p>
 {/if}
 
   <!-- small summary below the chart showing means and comparison -->
@@ -205,5 +267,20 @@
 
 <style>
   .controls { display: flex; gap: 12px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
-  .plot { width: 100%; }
+  .plot { width: 100%; position: relative; }
+
+  .bar-tooltip {
+    position: absolute;
+    transform: translate(0, 0);
+    background: rgba(20, 28, 38, 0.95);
+    color: #eaeaea;
+    padding: 0.45rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    pointer-events: none;
+    z-index: 20;
+    backdrop-filter: blur(6px);
+    white-space: nowrap;
+  }
 </style>
