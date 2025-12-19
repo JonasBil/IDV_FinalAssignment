@@ -178,6 +178,7 @@
     hoveredBin = null;
   }
 </script>
+<div class= "charts-container"> 
 <!-- Title -->
 <div class="header">
   <h1>Histogram of the date of birth of women in street names in selected cities</h1>
@@ -264,6 +265,7 @@
       <p>Select City A to see mean birth years and comparisons.</p>
     {/if}
   </div>
+</div>
 
 <style>
   .controls { display: flex; gap: 12px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
