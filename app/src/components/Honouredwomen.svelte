@@ -148,11 +148,11 @@
       datasets.push({
         label: selectedA,
         data: dataA,
-        backgroundColor: 'rgba(255,205,86,0.95)',
+        backgroundColor: '#75234d',
         borderColor: '#ffffff',
-        borderWidth: 2,
+        borderWidth: 0.75,
         borderSkipped: false,
-        hoverBackgroundColor: 'rgba(255,205,86,1)',
+        hoverBackgroundColor: '#75234d',
         hoverBorderColor: '#ffffff'});}
 
 // Dataset for city B
@@ -160,11 +160,11 @@
       datasets.push({
         label: selectedB,
         data: dataB,
-        backgroundColor: 'rgba(54,162,235,0.95)',
+        backgroundColor: '#23754b',
         borderColor: '#ffffff',
-        borderWidth: 2,
+        borderWidth: 0.75,
         borderSkipped: false,
-        hoverBackgroundColor: 'rgba(54,162,235,1)',
+        hoverBackgroundColor: '#23754b',
         hoverBorderColor: '#ffffff'
       });
     }
