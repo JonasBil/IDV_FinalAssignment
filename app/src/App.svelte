@@ -1,6 +1,7 @@
 <script>
   import Header from './components/Header.svelte';
   import Footer from './components/Footer.svelte';
+  import MapSelection from './components/MapSelection.svelte';
   import MapVisualization from './components/MapVisualization.svelte';
   import Categories from './components/Categories.svelte';
   import Honouredwomen from './components/Honouredwomen.svelte';
@@ -25,7 +26,11 @@
   
   <main>
     <div class="content" aria-hidden={promptVisible}>
-      <MapVisualization />
+      <MapSelection />
+
+      <div>
+        <MapVisualization />
+      </div>
 
       <div>
         <Categories />
