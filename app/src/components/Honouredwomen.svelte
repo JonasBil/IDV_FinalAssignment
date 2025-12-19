@@ -67,6 +67,16 @@
 
   const cityOptions = Object.keys(summary).sort();
 
+  // colour scheme for cities (kept in sync with the Plot `color.scheme` below)
+  const colorScheme = ['#2ecc71', '#e74c3c', '#3498db', '#f39c12'];
+
+  // reactive domain/map using the project's $derived helper
+  const colorDomain = $derived(selectedB ? [selectedA, selectedB] : [selectedA]);
+  const colorMap = $derived((() => {
+    const dom = colorDomain || [];
+    return Object.fromEntries(dom.map((c, i) => [c, colorScheme[i % colorScheme.length]]));
+  })());
+
   const cityKeyToSummaryCity = new Map(
     cityOptions.map((c) => [normalizeCityKey(c), c])
   );
@@ -185,10 +195,17 @@
 </div>
 
 <!-- selection (from map) -->
-<div class="controls">
-  <div>City A: <strong>{selectedA || '(select on map)'}</strong></div>
-  <div>City B: <strong>{selectedB || '(optional)'}</strong></div>
-</div>
+  <div class="selectors">
+    <div>
+      <label>City 1</label><br />
+      <strong>{selectedA || '(select on map)'}</strong>
+    </div>
+
+    <div>
+      <label>City 2</label><br />
+      <strong>{selectedB || '(optional)'}</strong>
+    </div>
+  </div>
 
 <!-- plot -->
 {#if selectedA && rows.length}
@@ -246,16 +263,16 @@
     {#if selectedA}
       <p>
         {#if selectedB}
-         On average, women in {selectedA} are born in {meanA ? Math.round(meanA) : '—'}, while women in {selectedB} are born in {meanB ? Math.round(meanB) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}.
+         On average, women in <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong> are born in {meanA ? Math.round(meanA) : '—'}, while women in <strong style="color: {colorMap[selectedB] || 'currentColor'}">{selectedB}</strong> are born in {meanB ? Math.round(meanB) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}.
         {:else}
-         On average, women in {selectedA} are born in {meanA ? Math.round(meanA) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}. Select City B to compare.
+         On average, women in <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong> are born in {meanA ? Math.round(meanA) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}. Select City B to compare.
         {/if}
 
         {#if selectedA && selectedB && meanA != null && meanB != null}
           {#if meanA < meanB}
-            On average, {selectedA} honours earlier-born women than {selectedB}.
+            On average, <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong> honours earlier-born women than <strong style="color: {colorMap[selectedB] || 'currentColor'}">{selectedB}</strong>.
           {:else if meanA > meanB}
-            On average, {selectedB} honours earlier-born women than {selectedA}.
+            On average, <strong style="color: {colorMap[selectedB] || 'currentColor'}">{selectedB}</strong> honours earlier-born women than <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong>.
           {:else}
             Both cities have the same mean birth year.
           {/if}
@@ -266,9 +283,13 @@
     {/if}
   </div>
 </div>
-
 <style>
-  .controls { display: flex; gap: 12px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+    .selectors {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+  }
   .plot { width: 100%; position: relative; }
 
   .bar-tooltip {
