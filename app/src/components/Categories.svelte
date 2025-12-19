@@ -271,9 +271,18 @@
 
 <div class="description_box">
   <p>
-    Comparison of two cities based on the occupation categories of women represented
-    in their street names. Streets are excluded only when no occupation information
-    is available in either textual labels or Wikidata occupation categories.
+  This visualization makes the comparison between occupation categories among streets named after women in the selected city(ies).
+  The pie charts show how women honoured in street names are distributed across broad occupation
+  categories such as
+  <span class="cat culture">culture</span>,
+  <span class="cat politics">politics</span>,
+  <span class="cat religion">religion</span>,
+  <span class="cat science">science</span>,
+  <span class="cat military">military</span>,
+  and <span class="cat others">others</span>.
+  Differences in the distributions highlight how cities vary in the types of achievements and
+  social roles through which women are commemorated in the urban landscape.
+  Hover over pie segments to see exact percentages.
   </p>
 </div>
 
@@ -343,4 +352,17 @@
     line-height: 1.4;
     font-style: italic;
   }
+
+  .description_box .cat {
+  font-weight: 600;
+  }
+
+  /* same colors as legend & pies */
+  .description_box .culture  { color: #17BECF; }
+  .description_box .politics { color: #FFC20A; }
+  .description_box .religion { color: #00668E; }
+  .description_box .science  { color: #EF553B; }
+  .description_box .military { color: #FF9920; }
+  .description_box .others   { color: #9E48D0; }
+  
 </style>
