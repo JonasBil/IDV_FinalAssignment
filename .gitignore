@@ -11,3 +11,5 @@ app/src/Streets.json
 scripts/data.json
 
 .vite/
+package-lock.json
+
