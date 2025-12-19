@@ -8,6 +8,7 @@
   import Cookies from './components/Cookies.svelte';
   import Waffle from './components/Waffle.svelte';
   import Intro from './components/Intro.svelte';
+  import DivergingBars from './components/DivergingBars.svelte';
   import './Styles.css'
 
   // show the initial prompt until the user makes a choice
