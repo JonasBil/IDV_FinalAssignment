@@ -1,6 +1,6 @@
 <script>
-  import Streets from "./Streets.json";
-  import { Plot, BarY, GridY, RuleY, groupX } from "@gka/svelteplot";
+  import Streets from "../Streets.json";
+  import { Plot, BarY, GridY, RuleY, groupX } from "svelteplot";
 
   const binSize = 10;
 
