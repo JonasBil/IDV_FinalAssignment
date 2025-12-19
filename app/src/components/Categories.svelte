@@ -192,86 +192,90 @@
 
 <!-- UI -->
 
-<h1 class="main-title">
+<h1>
   Representation of street names honouring women, grouped by occupation
 </h1>
 
-<div class="selectors">
-  <div>
-    <label>City 1</label><br />
-    <select bind:value={city1}>
-      <option value="">Choose…</option>
-      {#each cities as c}
-        <option value={c}>{c}</option>
-      {/each}
-    </select>
-  </div>
-
-  <div>
-    <label>City 2</label><br />
-    <select bind:value={city2}>
-      <option value="">Choose…</option>
-      {#each cities as c}
-        <option value={c}>{c}</option>
-      {/each}
-    </select>
-  </div>
-</div>
-
-<div class="charts">
-  <div class="chart">
-    <h3>{city1 || "City 1"}</h3>
-
-    {#if top1}
-      <p>
-        Most represented category:
-        <strong>{top1.category}</strong>
-        ({top1.pct.toFixed(1)}%)
-      </p>
-    {/if}
-
-    {#if pie1.length}
-      <PieChart
-        data={pie1}
-        size={250}
-        city={city1}
-        otherCity={city2}
-        pctThis={pctCity1}
-        pctOther={pctCity2}/>
-    {:else}
-      <p>No occupation data available</p>
-    {/if}
+<div class="charts-container">
+  <div class="selectors">
+    <div>
+      <label>City 1</label><br />
+      <select bind:value={city1}>
+        <option value="">Choose…</option>
+        {#each cities as c}
+          <option value={c}>{c}</option>
+        {/each}
+      </select>
     </div>
-  <div class="chart">
-    <h3>{city2 || "City 2"}</h3>
 
-    {#if top2}
-      <p>
-        Most represented category:
-        <strong>{top2.category}</strong>
-        ({top2.pct.toFixed(1)}%)
-      </p>
-    {/if}
+    <div>
+      <label>City 2</label><br />
+      <select bind:value={city2}>
+        <option value="">Choose…</option>
+        {#each cities as c}
+          <option value={c}>{c}</option>
+        {/each}
+      </select>
+    </div>
+  </div>
 
-    {#if pie2.length}
-      <PieChart
-        data={pie2}
-        size={250}
-        city={city2}
-        otherCity={city1}
-        pctThis={pctCity2}
-        pctOther={pctCity1}/>
-    {:else}
-      <p>No occupation data available</p>
-    {/if}
+  <div class="charts">
+    <div class="chart">
+      <h3>{city1 || "City 1"}</h3>
+
+      {#if top1}
+        <p>
+          Most represented category:
+          <strong>{top1.category}</strong>
+          ({top1.pct.toFixed(1)}%)
+        </p>
+      {/if}
+
+      {#if pie1.length}
+        <PieChart
+          data={pie1}
+          size={250}
+          city={city1}
+          otherCity={city2}
+          pctThis={pctCity1}
+          pctOther={pctCity2}/>
+      {:else}
+        <p>No occupation data available</p>
+      {/if}
+      </div>
+    <div class="chart">
+      <h3>{city2 || "City 2"}</h3>
+
+      {#if top2}
+        <p>
+          Most represented category:
+          <strong>{top2.category}</strong>
+          ({top2.pct.toFixed(1)}%)
+        </p>
+      {/if}
+
+      {#if pie2.length}
+        <PieChart
+          data={pie2}
+          size={250}
+          city={city2}
+          otherCity={city1}
+          pctThis={pctCity2}
+          pctOther={pctCity1}/>
+      {:else}
+        <p>No occupation data available</p>
+      {/if}
+    </div>
   </div>
 </div>
 
-<p class="main-caption">
-  Comparison of two cities based on the occupation categories of women represented
-  in their street names. Streets are excluded only when no occupation information
-  is available in either textual labels or Wikidata occupation categories.
-</p>
+<div class="description_box">
+  <p>
+    Comparison of two cities based on the occupation categories of women represented
+    in their street names. Streets are excluded only when no occupation information
+    is available in either textual labels or Wikidata occupation categories.
+  </p>
+</div>
 
 <style>
   .main-title {

@@ -27,11 +27,11 @@
     <div class="content" aria-hidden={promptVisible}>
       <MapVisualization />
 
-      <div class="charts-container">
+      <div>
         <Categories />
       </div>
 
-      <div class="charts-container">
+      <div>
         <Honouredwomen />
       </div>
       <div>

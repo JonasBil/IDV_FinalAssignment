@@ -250,36 +250,42 @@
 
 </script>
 
-<div class="container"> <!-- title-->
-  <h2>Histogram of the date of birth of women in street names in selected cities</h2>
 
-  <p class="subtitle">The histogram groups birth years into 10-year bins and counts how many honoured women
-      were born in each interval. This lets us compare the age cohorts represented in street names
-      between cities and spot if one city honours earlier or later-born figures.</p>
+<div class="header">
+  <h1>Histogram of the date of birth of women in street names in selected cities</h1>
+</div>
 
-  {#if error}  <!-- in case an error occurs this message shows up -->
-    <p style="color:crimson">Error loading data: {error}</p>
-  {/if}
+<div class="charts-container"> <!-- title-->
 
-  <div class="controls">  <!-- labels for the selectors -->
-    <label for="cityA">City A:</label>
-    <select id="cityA" bind:value={selectedA} on:change={renderChart}>
-      {#each cityOptions as c}
-        <option value={c}>{c}</option>
-      {/each}
-    </select>
-<!-- second selector -->
-    <label for="cityB">City B:</label>
-    <select id="cityB" bind:value={selectedB} on:change={renderChart}>
-      <option value="">(none)</option>
-      {#each cityOptions as c}
-        <option value={c}>{c}</option>
-      {/each}
-    </select>
-  </div>
+    <p class="subtitle">The histogram groups birth years into 10-year bins and counts how many honoured women
+        were born in each interval. This lets us compare the age cohorts represented in street names
+        between cities and spot if one city honours earlier or later-born figures.</p>
 
-<!--  canvas for chart -->
-  <canvas bind:this={canvasEl}></canvas>
+    {#if error}  <!-- in case an error occurs this message shows up -->
+      <p style="color:crimson">Error loading data: {error}</p>
+    {/if}
+
+    <div class="controls">  <!-- labels for the selectors -->
+      <label for="cityA">City A:</label>
+      <select id="cityA" bind:value={selectedA} on:change={renderChart}>
+        {#each cityOptions as c}
+          <option value={c}>{c}</option>
+        {/each}
+      </select>
+  <!-- second selector -->
+      <label for="cityB">City B:</label>
+      <select id="cityB" bind:value={selectedB} on:change={renderChart}>
+        <option value="">(none)</option>
+        {#each cityOptions as c}
+          <option value={c}>{c}</option>
+        {/each}
+      </select>
+    </div>
+
+  <!--  canvas for chart -->
+    <canvas bind:this={canvasEl}></canvas>
+</div>
+
 
   <!-- small summary below the chart showing means and comparison -->
   <div class="description_box" aria-live="polite">
@@ -306,7 +312,7 @@
     {/if}
   </div>
 
-</div>
+
  
 
 <style>

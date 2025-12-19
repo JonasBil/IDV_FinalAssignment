@@ -13,11 +13,11 @@
 
 h1 { margin: 0; font-size: 1.5rem; border-bottom: 3px solid #fb923c; display: inline-block; padding-bottom: 0.25rem; }
 
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; margin-top: 1rem; }
 .description_box { margin-top: 1.5rem; padding: 1rem; background: #1f2937; border-left: 3px solid #fb923c; color: #9ca3af; font-size: 0.85rem; line-height: 1.5; }
 
 .orange_bold {color: #fb923c; font-weight: bold;}
 .blue_bold{color: #60a5fa; font-weight: bold;}
 
-.charts-container {margin-top: 2rem; display: flex; flex-direction: column; gap: 2rem; background-color: #1f2937; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); width: 100%;}
+.charts-container {margin-top: 2rem; display: flex; flex-direction: column; gap: 2rem; background-color: #1f2937; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); width: 100%; padding: 1rem;}
 
