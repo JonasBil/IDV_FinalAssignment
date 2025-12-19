@@ -2,6 +2,7 @@
   import { Plot, Geo } from 'svelteplot';
   import { geoMercator } from 'd3-geo';
   import cityData from '../city_centers.json';
+  import { selectedCities } from '../stores/compareSelection.js';
   import '../Styles.css';
 
   let europe = $state(null);
@@ -17,6 +18,7 @@
   // Interaction
   let dragging = false;
   let start = { x: 0, y: 0 };
+  let moved = false;
   let hovered = $state(null);
 
   let femalePctByCity = $state({});
@@ -162,6 +164,29 @@
     hovered = closest;
   }
 
+  function handleClick(e) {
+    const svg = e.currentTarget.querySelector('svg');
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    let closest = null;
+    let minD2 = Infinity;
+
+    for (const feature of cities.features) {
+      const [cx, cy] = projection(feature.geometry.coordinates);
+      const r = radiusForPct(feature?.properties?.femalePct) + 2;
+      const d2 = (mx - cx) ** 2 + (my - cy) ** 2;
+      if (d2 <= r * r && d2 < minD2) {
+        minD2 = d2;
+        closest = feature;
+      }
+    }
+
+    if (closest?.properties?.name) selectedCities.toggle(closest.properties.name);
+  }
+
   function handleMouseLeave() {
     hovered = null;
   }
@@ -182,6 +207,11 @@
 
   getEuropeData();
   loadFemalePctByCity();
+
+  function displayCity(name) {
+    const s = (name ?? '').toString();
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+  }
 
 </script>
 
@@ -211,16 +241,19 @@
   <div 
     class="map-container" 
     onwheel={handleWheel}
-    onmousedown={(e) => { dragging = true; start = { x: e.clientX - pan.x, y: e.clientY - pan.y }; }}
+    onmousedown={(e) => { dragging = true; moved = false; start = { x: e.clientX - pan.x, y: e.clientY - pan.y }; }}
     onmousemove={(e) => { 
       if (dragging) { 
         e.preventDefault(); 
+        const dx = e.clientX - start.x - pan.x;
+        const dy = e.clientY - start.y - pan.y;
+        if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
         pan = { x: e.clientX - start.x, y: e.clientY - start.y }; 
       } else {
         handleMouseMove(e);
       }
     }}
-    onmouseup={() => { dragging = false; }}
+    onmouseup={(e) => { dragging = false; if (!moved) handleClick(e); }}
     onmouseleave={() => { dragging = false; handleMouseLeave(); }}
   >
     {#if europe}
@@ -228,6 +261,15 @@
         <Geo data={europe.features} stroke="white" fill="#374151" />
         <Geo data={cities.features} r={(d) => radiusForPct(d?.properties?.femalePct)} fill="#fb923c" />
       </Plot>
+    {/if}
+  </div>
+
+  <div class="selection-readout" aria-live="polite">
+    <div class="selection-title">Selected cities (max 2):</div>
+    {#if $selectedCities.length === 0}
+      <div class="selection-value">None</div>
+    {:else}
+      <div class="selection-value">{$selectedCities.map(displayCity).join(' vs ')}</div>
     {/if}
   </div>
 </div>
@@ -243,6 +285,24 @@
 
   .hovered-city {
     color: #fb923c;
+    text-transform: capitalize;
+  }
+
+  .selection-readout {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background-color: #1f2937;
+    border-radius: 0.5rem;
+  }
+
+  .selection-title {
+    font-size: 0.9rem;
+    color: #9ca3af;
+  }
+
+  .selection-value {
+    margin-top: 0.25rem;
+    color: #f3f4f6;
     text-transform: capitalize;
   }
 </style>
