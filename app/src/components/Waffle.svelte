@@ -340,7 +340,7 @@ function getBarColor_2(d) {
 
 </script>
 
-
+<div class="charts-container">
 
 <div class="header">
   <h1> Regional Culture found in street names</h1>
@@ -472,7 +472,7 @@ function getBarColor_2(d) {
     {/if}
   </p>
 </div>
-
+</div>
 
 <style>
 
