@@ -8,10 +8,10 @@
   import Cookies from './components/Cookies.svelte';
   import Waffle from './components/Waffle.svelte';
   import Intro from './components/Intro.svelte';
-<<<<<<< HEAD
-=======
+
+
   // import DivergingBars from './components/DivergingBars.svelte';
->>>>>>> 374ee83 (slider)
+
   import './Styles.css'
 
   // show the initial prompt until the user makes a choice
