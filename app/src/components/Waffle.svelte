@@ -252,7 +252,7 @@ function getBarColor_2(d) {
 
 
 
-<h1> Regional Culture found in street names</h1>
+<h1> TEST Regional Culture found in street names</h1>
 
 <div class="dropdown-container">
   <p>Select two cities to compare the countries of citizenship of people who have streets named after them.</p>
