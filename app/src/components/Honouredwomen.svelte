@@ -148,12 +148,16 @@
 <!-- plot -->
 {#if selectedA && rows.length}
   <div class="plot">
-    <Plot
-      height={420}
-      color={{ legend: true }}
-      x={{ label: "Birth year of women", tickRotate: -45}}
-      y={{ label: "Count (women)" }}
-    >
+  <Plot
+  height={420}
+  color={{
+    legend: true,
+    scheme: ['#2ecc71', '#e74c3c'],   // colours to use
+    domain: selectedB ? [selectedA, selectedB] : [selectedA] // map colours to city names
+  }}
+  x={{ label: "Birth year of women", tickRotate: -45 }}
+  y={{ label: "Count (women)" }}
+>
       <GridY />
       <RuleY data={[0]} />
       <BarY
