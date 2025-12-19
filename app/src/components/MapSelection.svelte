@@ -18,21 +18,111 @@
   let dragging = false;
   let start = { x: 0, y: 0 };
   let hovered = $state(null);
-  let tooltip = $state({ x: 0, y: 0 });
 
-  const cityFeatures = Object.entries(cityData).map(([name, coords]) => ({
-    type: 'Feature',
-    properties: { name },
-    geometry: {
-      type: 'Point',
-      coordinates: [coords.lon, coords.lat]
+  let femalePctByCity = $state({});
+  let streetsLoading = $state(false);
+
+  const cityKeySet = new Set(Object.keys(cityData));
+  const CITY_ALIASES = {
+    // Common diacritics/English variants
+    'münchen': 'munchen',
+    'munich': 'munchen',
+    'athen': 'athene',
+    'athens': 'athene',
+    'gdańsk': 'gdansk',
+    'gdansk': 'gdansk',
+    'łódź': 'łodz',
+    'lodz': 'łodz',
+    'kobenhavn': 'københavn'
+  };
+
+  function toCityKey(name) {
+    const raw = (name ?? '').toString().trim().toLowerCase();
+    if (cityKeySet.has(raw)) return raw;
+
+    const directAlias = CITY_ALIASES[raw];
+    if (directAlias && cityKeySet.has(directAlias)) return directAlias;
+
+    const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
+    if (cityKeySet.has(stripped)) return stripped;
+
+    const strippedAlias = CITY_ALIASES[stripped];
+    if (strippedAlias && cityKeySet.has(strippedAlias)) return strippedAlias;
+
+    return raw;
+  }
+
+  function radiusForPct(pct) {
+    const MIN_R = 3;
+    const MAX_R = 12;
+    const MULTIPLIER = 1.6;
+    if (typeof pct !== 'number' || !Number.isFinite(pct)) return MIN_R;
+    const clamped = Math.max(0, Math.min(100, pct));
+    const scaled = MIN_R + (MAX_R - MIN_R) * Math.sqrt(clamped / 100);
+    return Math.min(MAX_R, MIN_R + (scaled - MIN_R) * MULTIPLIER);
+  }
+
+  async function loadFemalePctByCity() {
+    if (streetsLoading) return;
+    streetsLoading = true;
+
+    const cacheKey = 'femalePctByCity_fromStreets_v1';
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        femalePctByCity = JSON.parse(cached);
+        return;
+      }
+
+      const streetsUrl = new URL('../Streets.json', import.meta.url);
+      const res = await fetch(streetsUrl);
+      const streets = await res.json();
+
+      const totals = Object.create(null);
+      const females = Object.create(null);
+
+      for (const row of streets) {
+        const city = toCityKey(row?.lau_name);
+        if (!city) continue;
+        totals[city] = (totals[city] ?? 0) + 1;
+
+        const g = (row?.gender ?? '').toString().toLowerCase();
+        if (g === 'female') females[city] = (females[city] ?? 0) + 1;
+      }
+
+      const pct = Object.create(null);
+      for (const city of Object.keys(totals)) {
+        pct[city] = ((females[city] ?? 0) / totals[city]) * 100;
+      }
+
+      femalePctByCity = pct;
+      localStorage.setItem(cacheKey, JSON.stringify(pct));
+    } catch (err) {
+      console.error('Failed to compute female street percentages from Streets.json', err);
+      femalePctByCity = {};
+    } finally {
+      streetsLoading = false;
     }
-  }));
+  }
 
-  const cities = {
+  const cityFeatures = $derived(
+    Object.entries(cityData).map(([name, coords]) => ({
+      type: 'Feature',
+      properties: {
+        name,
+        femalePct: femalePctByCity[name] ?? null
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [coords.lon, coords.lat]
+      }
+    }))
+  );
+
+  const cities = $derived({
     type: 'FeatureCollection',
     features: cityFeatures
-  };
+  });
 
   // Projection for zooming and panning
   let scale = $derived(baseScale * (1 + zoom / 50));
@@ -49,16 +139,31 @@
     fitMap(europe);
   }
 
-  function handleHover(e) {
-    console.log('Hover event:', e.detail); // Debugging line
-    const d = e.detail.data;
-    // Check if the hovered item is a city point
-    if (d && d.properties && d.properties.name) {
-      hovered = d;
-      tooltip = { x: e.detail.x, y: e.detail.y };
-    } else {
-      hovered = null;
+  function handleMouseMove(e) {
+    const svg = e.currentTarget.querySelector('svg');
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    let closest = null;
+    let minD2 = Infinity;
+
+    for (const feature of cities.features) {
+      const [cx, cy] = projection(feature.geometry.coordinates);
+      const r = radiusForPct(feature?.properties?.femalePct) + 2;
+      const d2 = (mx - cx) ** 2 + (my - cy) ** 2;
+      if (d2 <= r * r && d2 < minD2) {
+        minD2 = d2;
+        closest = feature;
+      }
     }
+
+    hovered = closest;
+  }
+
+  function handleMouseLeave() {
+    hovered = null;
   }
 
   function handleWheel(e) {
@@ -76,21 +181,16 @@
   }
 
   getEuropeData();
+  loadFemalePctByCity();
 
 </script>
-
-{#if hovered}
-  <div class="tooltip" style="position: fixed; top: {tooltip.y + 5}px; left: {tooltip.x + 5}px;">
-    {hovered.properties.name}
-  </div>
-{/if}
 
 <div class="visualization-container">
   <div class="header">
     <h1>
-      Map of Europe 
+      Map of Europe
       {#if hovered}
-        <span class="hovered-city">: {hovered.properties.name.toUpperCase()}</span>
+        <span class="hovered-city">: {hovered.properties.name}</span>
       {/if}
     </h1>
     <div class="controls">
@@ -116,15 +216,17 @@
       if (dragging) { 
         e.preventDefault(); 
         pan = { x: e.clientX - start.x, y: e.clientY - start.y }; 
+      } else {
+        handleMouseMove(e);
       }
     }}
     onmouseup={() => { dragging = false; }}
-    onmouseleave={() => { dragging = false; }}
+    onmouseleave={() => { dragging = false; handleMouseLeave(); }}
   >
     {#if europe}
-      <Plot {projection} {width} {height} on:hover={handleHover}>
+      <Plot {projection} {width} {height}>
         <Geo data={europe.features} stroke="white" fill="#374151" />
-        <Geo data={cities.features} r={3} fill="#fb923c" />
+        <Geo data={cities.features} r={(d) => radiusForPct(d?.properties?.femalePct)} fill="#fb923c" />
       </Plot>
     {/if}
   </div>
@@ -142,15 +244,5 @@
   .hovered-city {
     color: #fb923c;
     text-transform: capitalize;
-  }
-
-  .tooltip {
-    background: #111827;
-    color: #f3f4f6;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.25rem;
-    border: 1px solid #374151;
-    pointer-events: none; /* so it doesn't block mouse events on the map */
-    z-index: 10;
   }
 </style>
