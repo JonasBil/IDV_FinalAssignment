@@ -1,21 +1,22 @@
 <script>
   import Streets from "../Streets.json";
   import { Plot, BarY, GridY, RuleY, groupX } from "svelteplot";
-
+  import '../Styles.css'
+  // Bin size in years for the histogram
   const binSize = 10;
 
+// Selected cities for comparison
   let selectedA = "";
   let selectedB = "";
 
+// Extract year from date_of_birth field
   function extractYearFromDob(dob) {
     if (!dob) return null;
-
+// Try to parse as a date first
     const parsed = new Date(dob);
     if (!isNaN(parsed.getTime())) return parsed.getFullYear();
-
     const m = String(dob).match(/(1[6-9]\d{2}|20\d{2})/);
-    return m ? Number(m[0]) : null;
-  }
+    return m ? Number(m[0]) : null;}
 
   // Build: { city: { year: count } } for women only
   function buildSummary(rows) {
@@ -34,9 +35,7 @@
       out[city] ??= Object.create(null);
       out[city][year] = (out[city][year] || 0) + 1;
     }
-
-    return out;
-  }
+    return out;}
 
   const summary = buildSummary(Streets);
 
@@ -60,9 +59,9 @@
       binCounts[binStart].a += Number(yearsA[y] || 0);
       binCounts[binStart].b += Number(yearsB[y] || 0);
     }
-
+// Sort bins
     const sortedBins = Object.keys(binCounts).map(Number).sort((x, y) => x - y);
-
+// Build rows for plotting
     const rows = [];
     for (const binStart of sortedBins) {
       rows.push({
@@ -81,7 +80,7 @@
     }
     return rows;
   }
-
+// Calculate mean birth year from years object
   function meanFromYears(yearsObj) {
     let total = 0;
     let count = 0;
@@ -94,7 +93,7 @@
     }
     return count ? total / count : null;
   }
-
+// Calculate mean birth year across all cities
   function meanAll(summaryObj) {
     let total = 0;
     let count = 0;
@@ -111,25 +110,23 @@
     return count ? total / count : null;
   }
 
+// Initialize reactive variables for plot data and means
   let rows = [];
   let meanA = null;
   let meanB = null;
   let meanAllCities = null;
-
+// Reactive updates when selected cities change
   $: rows = selectedA ? buildPlotRows(selectedA, selectedB) : [];
   $: meanA = selectedA ? meanFromYears(summary[selectedA]) : null;
   $: meanB = selectedB ? meanFromYears(summary[selectedB]) : null;
   $: meanAllCities = meanAll(summary);
 </script>
-
+<!-- Title -->
 <div class="header">
   <h1>Histogram of the date of birth of women in street names in selected cities</h1>
 </div>
 
-<p class="subtitle">
-  Birth years are grouped into 10-year bins and counted per city (women only).
-</p>
-
+<!-- selectors -->
 <div class="controls">
   <label for="cityA">City A:</label>
   <select id="cityA" bind:value={selectedA}>
@@ -147,30 +144,36 @@
   </select>
 </div>
 
+<!-- plot -->
 {#if selectedA && rows.length}
   <div class="plot">
     <Plot
       height={420}
       color={{ legend: true }}
-      x={{ label: "Birth year (10y bins)" }}
+      x={{ label: "Birth year of women", tickRotate: -45}}
       y={{ label: "Count (women)" }}
     >
       <GridY />
       <RuleY data={[0]} />
       <BarY
         {...groupX(
-          { data: rows, x: "bin", y: "count", fill: "city" },
+          { data: rows, x: "bin", y: "count", fill: "city", stroke: "white", strokeWidth: 0.8 },
           { y: "sum" }
         )}
       />
     </Plot>
   </div>
 {:else}
+
   <p>Select City A to show the chart.</p>
 {/if}
 
   <!-- small summary below the chart showing means and comparison -->
+
   <div class="description_box" aria-live="polite">
+    <p> The histogram groups birth years into 10-year bins and counts how many honoured women
+      were born in each interval. This lets us compare the age cohorts represented in street names
+      between cities and spot if one city honours earlier or later-born figures. </p>
     {#if selectedA}
       <p>
         {#if selectedB}
@@ -181,9 +184,9 @@
 
         {#if selectedA && selectedB && meanA != null && meanB != null}
           {#if meanA < meanB}
-            On average, {selectedA} honours earlier-born women than {selectedB} (lower mean).
+            On average, {selectedA} honours earlier-born women than {selectedB}.
           {:else if meanA > meanB}
-            On average, {selectedB} honours earlier-born women than {selectedA} (lower mean).
+            On average, {selectedB} honours earlier-born women than {selectedA}.
           {:else}
             Both cities have the same mean birth year.
           {/if}
@@ -195,8 +198,8 @@
   </div>
 
 <style>
-  .subtitle { font-size: 0.95rem; color: #6b7280; margin: 0.25rem 0 0.75rem; }
+  
   .controls { display: flex; gap: 12px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
   .plot { width: 100%; }
-  .description_box { margin-top: 10px; }
+
 </style>
