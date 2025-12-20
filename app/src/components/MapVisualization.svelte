@@ -203,7 +203,10 @@
 
 <div class="visualization-container">
   <div class="header">
-    <h1>Street Names Gender</h1>
+    <div class="title-section">
+      <h1>Street Names Gender</h1>
+      <p class="subtitle">Click on a street to see more information about the person it was named after</p>
+    </div>
     <div class="controls">
       <CityDropdown />
       <div class="slider-control">
