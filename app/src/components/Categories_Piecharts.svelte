@@ -83,7 +83,7 @@
           Z
         "
         fill={colors[s.category]}
-        opacity={hovered && hovered !== s ? 0.35 : 1}
+        opacity={hovered && hovered.category !== s.category ? 0.35 : 1}
         style="cursor:pointer"
       />
     {/each}
