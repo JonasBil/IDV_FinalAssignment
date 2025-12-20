@@ -132,3 +132,16 @@ select {
     border: 1px solid #374151; 
     border-radius: 0.25rem; 
 }
+
+/* Easter egg confetti animation */
+@keyframes confetti-fall {
+    0% {
+        top: -20px;
+        opacity: 1;
+    }
+    100% {
+        top: 100vh;
+        opacity: 0;
+        transform: rotate(720deg) translateX(100px);
+    }
+}
