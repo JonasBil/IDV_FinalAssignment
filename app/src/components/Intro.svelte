@@ -5,10 +5,10 @@
 <div class="intro">
   <h1>Who gets remembered in our streets?</h1>
 
-  <!-- General -->
+  <!-- ALGEMENE INTRO -->
   <p>
     For centuries, women across Europe were denied fundamental rights to work,
-    to political positions, and to public recognition.
+    political positions, and public recognition.
     Their labour, whether it was intellectual, cultural, or political, was often
     undervalued for commemoration. As a result, women were systematically excluded
     from the symbolic spaces through which societies remember their past.
@@ -32,12 +32,12 @@
     continue to shape present-day cities.
   </p>
 
-  <!-- Button -->
+  <!-- KNOP -->
   <button class="toggle-btn" on:click={() => showExample = !showExample}>
     {showExample ? 'Hide example' : 'Show example: Copenhagen vs Chișinău'}
   </button>
 
-  <!-- Example -->
+  <!-- VERDIEPING -->
   {#if showExample}
     <div class="example">
       <p>
@@ -52,7 +52,9 @@
         In <strong>Chișinău</strong>, the imbalance is even sharper.
         Out of … eponymic streets, <span class="blue_bold">...</span> are named after
         <span class="blue_bold">men</span>, which is less than <strong>...%</strong>.
+      </p>
 
+      <p>
         Beyond numbers, the occupation of women remembered in the streets differs
         strongly. In Copenhagen, most streets are associated with
         <strong>politics (40.6%)</strong>, while in Chișinău
@@ -62,7 +64,9 @@
         Copenhagen were born, on average, around <strong>1865</strong>, whereas in
         Chișinău the average birth year is considerably later, around
         <strong>1913</strong>.
+      </p>
 
+      <p>
         Nationality further sharpens this contrast. In Copenhagen,
         <strong>63.9%</strong> of streets named after women honour figures of
         <strong>Danish</strong> origin. In Chișinău, only <strong>16.3%</strong>
@@ -129,4 +133,5 @@
     }
   }
 </style>
+
 
