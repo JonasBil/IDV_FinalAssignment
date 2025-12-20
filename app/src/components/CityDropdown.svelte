@@ -123,13 +123,13 @@
   }
 
   .city-select:hover {
-    border-color: #6366f1;
+    border-color: #fb923c;
   }
 
   .city-select:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+    border-color: #fb923c;
+    box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.3);
   }
 
   .vs {
