@@ -4,6 +4,16 @@ import { Plot, WaffleY, AxisX } from 'svelteplot'
 import * as d3 from 'd3'
 import {selectedCities} from '../stores/compareSelection.js';
 
+// Hover state for waffle interactivity
+let hoveredSquare1 = $state(null);
+let hoveredSquare2 = $state(null);
+let tooltipPos1 = $state({ x: 0, y: 0 });
+let tooltipPos2 = $state({ x: 0, y: 0 });
+
+// Grid configuration for the waffle overlay (10x10 grid = 100 squares)
+const GRID_COLS = 10;
+const GRID_ROWS = 10;
+
 // const an array of studied city names
 const Cities = Array.from(new Set(unmixed_aggregated_street_data_citizenship.map(d => d.lau_name))).sort(); 
 
@@ -336,6 +346,32 @@ function getBarColor_2(d) {
     if (label === "Not Identified" ) return "#4a4a4a";
     return colorScale_2(label);} 
 
+// Handle hover events for waffle grid
+function handleCellHover(event, index, squares, cityNum) {
+  if (index >= 0 && index < squares.length) {
+    const square = squares[index];
+    // Get position relative to the waffle-wrapper (parent of overlay)
+    const wrapper = event.currentTarget.closest('.waffle-wrapper');
+    const rect = wrapper.getBoundingClientRect();
+    const pos = { x: event.clientX - rect.left + 15, y: event.clientY - rect.top - 10 };
+    if (cityNum === 1) {
+      hoveredSquare1 = square;
+      tooltipPos1 = pos;
+    } else {
+      hoveredSquare2 = square;
+      tooltipPos2 = pos;
+    }
+  }
+}
+
+function handleCellLeave(cityNum) {
+  if (cityNum === 1) {
+    hoveredSquare1 = null;
+  } else {
+    hoveredSquare2 = null;
+  }
+}
+
 
 
 </script>
@@ -358,86 +394,124 @@ function getBarColor_2(d) {
 
 
 <div class="facet facet-2">
-  
-  <div class="legend">
-    {#each filtered_aggregated_data as item}
-      <div class="legend-item">
-        <span class="swatch" style="background-color: {getBarColor({country_of_citizenship_label: item.country_of_citizenship_label})}"></span>
-        <span>{item.country_of_citizenship_label}</span>
-      </div>
-    {/each}
-  </div>
 
   {#if Selected_city && Array.isArray(waffleSquares) && waffleSquares.length}
-    <Plot 
-      x={{ title: "City", label: "Studied City" }}
-      y={{ title: "Share (100 squares = 100%)", label: "Relative Frequency, 1 square = 1%" }}
-      width={600}
-      height={500}
-    >
-      <WaffleY 
-        data={waffleSquares} 
-        x="lau_name" 
-        y="value" 
-        fill={(d) => getBarColor(d)}
+    <div class="waffle-wrapper">
+      <Plot 
+        x={{ title: "City", label: "Studied City" }}
+        y={{ title: "Share (100 squares = 100%)", label: "Relative Frequency, 1 square = 1%" }}
+        width={600}
+        height={500}
       >
-        {#snippet symbol({x, y, height, width, style, styleClass })}
-          <g
-            style={(style || '') + '; pointer-events: all;'}
-            class={styleClass}
-            transform={'translate(' + x + ', ' + y + ') scale(' + (width / 60.6) + ', ' + (height / 60.6) + ')'}>
+        <WaffleY 
+          data={waffleSquares} 
+          x="lau_name" 
+          y="value" 
+          fill={(d) => getBarColor(d)}
+        >
+          {#snippet symbol({x, y, height, width, style, styleClass })}
+            <g
+              style={(style || '') + '; pointer-events: all;'}
+              class={styleClass}
+              transform={'translate(' + x + ', ' + y + ') scale(' + (width / 60.6) + ', ' + (height / 60.6) + ')'}>
 
-            <path d="m 30.307377,14.856128 c 1.775,0 3.215,-1.43875 3.215,-3.215 0,-1.7762504 -1.44,-3.2150005 -3.215,-3.2150005 -1.775,0 -3.215,1.4387501 -3.215,3.2150005 0,1.77625 1.44,3.215 3.215,3.215"/>
-            <path d="m 34.731127,21.608628 2.4975,9.325001 2.41125,0 -1.94375,-11.030001 c -0.30125,-1.69625 -1.56375,-3.145 -3.345,-3.5875 -1.295,-0.3225 -2.65,-0.49625 -4.04375,-0.49625 -1.39375,0 -2.748751,0.17375 -4.043751,0.49625 -1.78125,0.4425 -3.045,1.89125 -3.345,3.5875 l -1.94375,11.030001 2.41125,0 2.4975,-9.325001 1.005,3.74875 c -2.3075,3.431251 -3.655,7.561251 -3.655,12.007501 l 4.19125,0 1.265001,14.458751 3.235,0 1.26375,-14.458751 4.1925,0 c 0,-4.44625 -1.34625,-8.5775 -3.655,-12.008751 l 1.005,-3.7475"/>
-          </g>
-        {/snippet}
-      </WaffleY>
-      <AxisX tickFontSize={15} />
-    </Plot>
+              <path d="m 30.307377,14.856128 c 1.775,0 3.215,-1.43875 3.215,-3.215 0,-1.7762504 -1.44,-3.2150005 -3.215,-3.2150005 -1.775,0 -3.215,1.4387501 -3.215,3.2150005 0,1.77625 1.44,3.215 3.215,3.215"/>
+              <path d="m 34.731127,21.608628 2.4975,9.325001 2.41125,0 -1.94375,-11.030001 c -0.30125,-1.69625 -1.56375,-3.145 -3.345,-3.5875 -1.295,-0.3225 -2.65,-0.49625 -4.04375,-0.49625 -1.39375,0 -2.748751,0.17375 -4.043751,0.49625 -1.78125,0.4425 -3.045,1.89125 -3.345,3.5875 l -1.94375,11.030001 2.41125,0 2.4975,-9.325001 1.005,3.74875 c -2.3075,3.431251 -3.655,7.561251 -3.655,12.007501 l 4.19125,0 1.265001,14.458751 3.235,0 1.26375,-14.458751 4.1925,0 c 0,-4.44625 -1.34625,-8.5775 -3.655,-12.008751 l 1.005,-3.7475"/>
+            </g>
+          {/snippet}
+        </WaffleY>
+        <AxisX tickFontSize={15} />
+      </Plot>
+      
+      <!-- Invisible overlay grid for hover interaction -->
+      <div 
+        class="waffle-overlay"
+        onmouseleave={() => handleCellLeave(1)}
+      >
+        {#each Array(GRID_ROWS) as _, row}
+          {#each Array(GRID_COLS) as _, col}
+            {@const index = (GRID_ROWS - 1 - row) * GRID_COLS + col}
+            <div 
+              class="overlay-cell"
+              onmousemove={(e) => handleCellHover(e, index, waffleSquares, 1)}
+            ></div>
+          {/each}
+        {/each}
+      </div>
+      
+      <!-- Tooltip -->
+      {#if hoveredSquare1}
+        <div 
+          class="waffle-tooltip"
+          style="left: {tooltipPos1.x}px; top: {tooltipPos1.y}px; background-color: {getBarColor(hoveredSquare1)};"
+        >
+          {hoveredSquare1.category}
+        </div>
+      {/if}
+    </div>
   {:else}
     <p>{Selected_city ? `No data available for ${Selected_city}` : 'Select a city on the map to show data.'}</p>
   {/if}
 </div>
 
 <div class="facet facet-3">
- 
-  <div class="legend">
-    {#each filtered_aggregated_data_2 as item}
-      <div class="legend-item">
-        <span class="swatch" style="background-color: {getBarColor_2({country_of_citizenship_label: item.country_of_citizenship_label})}"></span>
-        <span>{item.country_of_citizenship_label}</span>
-      </div>
-    {/each}
-  </div>
 
   {#if Selected_city2 && Array.isArray(waffleSquares_2) && waffleSquares_2.length}
-    <Plot 
-      x={{ title: "City", label: "Studied City" }}
-      y={{ title: "Share (100 squares = 100%)", label: "Relative Frequency, 1 square = 1%" }}
-      width={600}
-      height={500}
-    >
-      <WaffleY 
-        data={waffleSquares_2} 
-        x="lau_name" 
-        y="value" 
-        fill={(d) => getBarColor_2(d)}
-        
+    <div class="waffle-wrapper">
+      <Plot 
+        x={{ title: "City", label: "Studied City" }}
+        y={{ title: "Share (100 squares = 100%)", label: "Relative Frequency, 1 square = 1%" }}
+        width={600}
+        height={500}
       >
-        {#snippet symbol({ x, y, height, width, style, styleClass })}
-          <g
-            style={(style || '') + '; pointer-events: all;'}
-            class={styleClass}
-            transform={'translate(' + x + ', ' + y + ') scale(' + (width / 60.6) + ', ' + (height / 60.6) + ')'}>
-            
-           
-            <path d="m 30.307377,14.856128 c 1.775,0 3.215,-1.43875 3.215,-3.215 0,-1.7762504 -1.44,-3.2150005 -3.215,-3.2150005 -1.775,0 -3.215,1.4387501 -3.215,3.2150005 0,1.77625 1.44,3.215 3.215,3.215"/>
-            <path d="m 34.731127,21.608628 2.4975,9.325001 2.41125,0 -1.94375,-11.030001 c -0.30125,-1.69625 -1.56375,-3.145 -3.345,-3.5875 -1.295,-0.3225 -2.65,-0.49625 -4.04375,-0.49625 -1.39375,0 -2.748751,0.17375 -4.043751,0.49625 -1.78125,0.4425 -3.045,1.89125 -3.345,3.5875 l -1.94375,11.030001 2.41125,0 2.4975,-9.325001 1.005,3.74875 c -2.3075,3.431251 -3.655,7.561251 -3.655,12.007501 l 4.19125,0 1.265001,14.458751 3.235,0 1.26375,-14.458751 4.1925,0 c 0,-4.44625 -1.34625,-8.5775 -3.655,-12.008751 l 1.005,-3.7475"/>
-          </g>
-        {/snippet}
-      </WaffleY>
-      <AxisX tickFontSize={15} />
-    </Plot>
+        <WaffleY 
+          data={waffleSquares_2} 
+          x="lau_name" 
+          y="value" 
+          fill={(d) => getBarColor_2(d)}
+          
+        >
+          {#snippet symbol({ x, y, height, width, style, styleClass })}
+            <g
+              style={(style || '') + '; pointer-events: all;'}
+              class={styleClass}
+              transform={'translate(' + x + ', ' + y + ') scale(' + (width / 60.6) + ', ' + (height / 60.6) + ')'}>
+              
+             
+              <path d="m 30.307377,14.856128 c 1.775,0 3.215,-1.43875 3.215,-3.215 0,-1.7762504 -1.44,-3.2150005 -3.215,-3.2150005 -1.775,0 -3.215,1.4387501 -3.215,3.2150005 0,1.77625 1.44,3.215 3.215,3.215"/>
+              <path d="m 34.731127,21.608628 2.4975,9.325001 2.41125,0 -1.94375,-11.030001 c -0.30125,-1.69625 -1.56375,-3.145 -3.345,-3.5875 -1.295,-0.3225 -2.65,-0.49625 -4.04375,-0.49625 -1.39375,0 -2.748751,0.17375 -4.043751,0.49625 -1.78125,0.4425 -3.045,1.89125 -3.345,3.5875 l -1.94375,11.030001 2.41125,0 2.4975,-9.325001 1.005,3.74875 c -2.3075,3.431251 -3.655,7.561251 -3.655,12.007501 l 4.19125,0 1.265001,14.458751 3.235,0 1.26375,-14.458751 4.1925,0 c 0,-4.44625 -1.34625,-8.5775 -3.655,-12.008751 l 1.005,-3.7475"/>
+            </g>
+          {/snippet}
+        </WaffleY>
+        <AxisX tickFontSize={15} />
+      </Plot>
+      
+      <!-- Invisible overlay grid for hover interaction -->
+      <div 
+        class="waffle-overlay"
+        onmouseleave={() => handleCellLeave(2)}
+      >
+        {#each Array(GRID_ROWS) as _, row}
+          {#each Array(GRID_COLS) as _, col}
+            {@const index = (GRID_ROWS - 1 - row) * GRID_COLS + col}
+            <div 
+              class="overlay-cell"
+              onmousemove={(e) => handleCellHover(e, index, waffleSquares_2, 2)}
+            ></div>
+          {/each}
+        {/each}
+      </div>
+      
+      <!-- Tooltip -->
+      {#if hoveredSquare2}
+        <div 
+          class="waffle-tooltip"
+          style="left: {tooltipPos2.x}px; top: {tooltipPos2.y}px; background-color: {getBarColor_2(hoveredSquare2)};"
+        >
+          {hoveredSquare2.category}
+        </div>
+      {/if}
+    </div>
   {:else}
     <p>{Selected_city2 ? `No data available for ${Selected_city2}` : 'Select a second city on the map to compare.'}</p>
   {/if}
@@ -476,72 +550,80 @@ function getBarColor_2(d) {
 
 <style>
 
-.dropdown-container {
-  margin-bottom: 20px;
-  margin-left: 20px;
-}
-
-.dropdown-wrapper {
-  display: flex;
-  gap: 420px;
-  align-items: center;
-}
-
 .selected-cities {
   margin-top: 6px;
 }
 
 /*the parent*/
-.container { width: 1300px; display: flex;     
-    gap: 28px;            
-    align-items: flex-start; font-family: "Nunito", sans-serif;font-weight: 400}
+.container { 
+  width: 100%;
+  display: flex;     
+  gap: 20px;            
+  align-items: flex-start; 
+  font-weight: 400;
+  margin-left: 2em;
+  margin-right: 2em;
+
+}
 
 /*the children*/
-.facet{width: 49%; display:inline-block;margin-left: 20px; }
-
-
-h1,h2 {
-  font-family: "Nunito", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;}
-
-h2 {font-weight: normal; font-size: 1em; color: #545454;}
-.description {font-weight: normal; font-size: 0.9em; color: #545454;}
-
-.legend {
+.facet {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 12px; 
-  font-size: 0.75em;
-  max-width: 600px;}
 
-.legend-item {
-  display:flex;
-  align-items:center;
-  font-size: 0.9em;
-  color: #aeadadff; margin-right: 8px;}
-
-.swatch {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-right: 4px;
-  border-radius: 2px;}
-
-
-.waffle-summary {
-  max-width: 1300px;
-  margin-left: 20px;
 }
+
 
 .top3-item u {
   text-underline-offset: 2px;
 }
 
 /* WaffleY handles layout; keep legend styles above */
+
+/* Waffle interactive overlay styles */
+.waffle-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.waffle-overlay {
+  position: absolute;
+  top: 25px; 
+  left: 85px; 
+  width: 440px; 
+  height: 430px; 
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  pointer-events: auto;
+}
+
+.overlay-cell {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  /* debug the grid alignment */
+  /* background: rgba(255, 0, 0, 0.1); */
+  /* border: 1px solid rgba(255, 0, 0, 0.3); */
+}
+
+
+.waffle-tooltip {
+  position: absolute;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.85em;
+  font-weight: 500;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transform: translateY(-100%);
+}
 
 
 </style>
