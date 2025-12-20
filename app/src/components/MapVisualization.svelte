@@ -257,9 +257,9 @@
 
     {#if geoData}
       <div class="legend">
-        <div class="item"><span class="box female"></span> Female ({percentages.female}%)</div>
-        <div class="item"><span class="box male"></span> Male ({percentages.male}%)</div>
-        <div class="item"><span class="box other"></span> Other ({percentages.other}%)</div>
+        <div class="item"><span class="box female"></span> Female {counts.female} ({percentages.female}%)</div>
+        <div class="item"><span class="box male"></span> Male {counts.male} ({percentages.male}%)</div>
+        <div class="item"><span class="box other"></span> Other {counts.other} ({percentages.other}%)</div>
       </div>
     {/if}
 
