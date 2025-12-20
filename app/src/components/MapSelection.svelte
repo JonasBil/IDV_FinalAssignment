@@ -357,6 +357,15 @@
       </div>
     {/if}
   </div>
+
+  <div class="selection-readout" aria-live="polite">
+    <div class="selection-title">Selected cities (max 2):</div>
+    {#if $selectedCities.length === 0}
+      <div class="selection-value">None</div>
+    {:else}
+      <div class="selection-value">{$selectedCities.map(displayCity).join(' vs ')}</div>
+    {/if}
+  </div>
 </div>
 
 <style>
