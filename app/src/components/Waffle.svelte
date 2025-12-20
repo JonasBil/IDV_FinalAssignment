@@ -4,6 +4,7 @@ import { Plot, WaffleY, AxisX } from 'svelteplot'
 import * as d3 from 'd3'
 import {selectedCities} from '../stores/compareSelection.js';
 import { CITY_KEY_TO_LAU, displayCityName, normalizeCityKey } from '../cityMappings.js';
+import CityDropdown from './CityDropdown.svelte';
 
 // Hover state for waffle interactivity
 let hoveredSquare1 = $state(null);
@@ -312,7 +313,7 @@ let top3_city2 = $derived.by(() => {
 // Create color scale for countries for city 2
 let colorScale_2 = $derived.by(() => {
   const countries = filtered_aggregated_data_2.map(d => d.country_of_citizenship_label);
-  const colors = d3.schemeDark2.concat(d3.schemeSet2);
+  const colors = d3.schemeDark2.concat(d3.schemeAccent);
   
   const scale = d3.scaleOrdinal()
     .domain(countries)
@@ -451,30 +452,19 @@ function handleCellLeave(cityNum) {
 
 </script>
 
-<div class="charts-container">
-
 <div class="header">
-  <h1> Regional Culture found in street names</h1>
+  <h1>Regional Culture found in street names</h1>
+  <div class="controls">
+    <CityDropdown />
+  </div>
 </div>
 
-<div class="dropdown-container">
-  <!-- <p>For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's regional culture in street names. One city might tend to name more streets to former or present inhabitants, other cities might emphasize different cultural backgrounds. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.</p> -->
-</div>
+<div class="charts-container">
 
 <div class="waffle-intro">
   <p>
-    For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's regional culture in street names. One city might tend to name more streets to former or present inhabitants, other cities might emphasize different cultural backgrounds. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.
+    For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's <strong>regional culture</strong> in street names. One city might tend to name more streets to <strong>former or present inhabitants</strong>, other cities might emphasize <strong>different cultural backgrounds</strong>. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.
   </p>
-
-  <div class="city-summary">
-    {#if Selected_city && Selected_city2}
-      <p>Comparing: <strong>{displayCityName(Selected_city)}</strong> vs <strong>{displayCityName(Selected_city2)}</strong></p>
-    {:else if Selected_city}
-      <p>Selected: <strong>{displayCityName(Selected_city)}</strong> — select a second city to compare.</p>
-    {:else}
-      <p>Select cities on the map to compare.</p>
-    {/if}
-  </div>
 </div>
 
 <div class="container">
@@ -508,7 +498,7 @@ function handleCellLeave(cityNum) {
             </g>
           {/snippet}
         </WaffleY>
-        <AxisX tickFontSize={15} />
+        <AxisX tickFontSize={15} anchor ="top" />
       </Plot>
       
       <!-- Invisible overlay grid for hover interaction -->
@@ -571,7 +561,7 @@ function handleCellLeave(cityNum) {
             </g>
           {/snippet}
         </WaffleY>
-        <AxisX tickFontSize={15} />
+        <AxisX tickFontSize={15} anchor="top"/>
       </Plot>
       
       <!-- Invisible overlay grid for hover interaction -->
@@ -638,19 +628,23 @@ function handleCellLeave(cityNum) {
 
 <style>
 
+.charts-container {
+  margin-top: 0.75rem;
+}
+
+.waffle-top3 {
+  margin-top: 1rem;
+}
+
 .waffle-intro {
-  margin: 0.25rem 2em 0.5rem;
+  margin: 0.25rem 1em 0.25rem;
   color: #9ca3af;
   font-size: 0.85rem;
   line-height: 1.5;
 }
 
 .waffle-intro p {
-  margin: 0 0 0.35rem;
-}
-
-.city-summary p {
-  margin: 0 0 0.35rem;
+  margin: 0;
 }
 
 /*the parent*/
@@ -688,10 +682,10 @@ function handleCellLeave(cityNum) {
 
 .waffle-overlay {
   position: absolute;
-  top: 25px; 
+  top: 35px; 
   left: 85px; 
   width: 440px; 
-  height: 430px; 
+  height: 460px; 
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
@@ -702,9 +696,9 @@ function handleCellLeave(cityNum) {
   width: 100%;
   height: 100%;
   cursor: pointer;
-  /* debug the grid alignment */
-  /* background: rgba(255, 0, 0, 0.1); */
-  /* border: 1px solid rgba(255, 0, 0, 0.3); */
+  /* debug the grid alignment
+  background: rgba(255, 0, 0, 0.1);
+   border: 1px solid rgba(255, 0, 0, 0.3);  */
 }
 
 
