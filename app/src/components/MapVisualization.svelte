@@ -2,11 +2,42 @@
   import { Plot, Geo } from 'svelteplot';
   import { geoMercator } from 'd3-geo';
   import '../Styles.css';
+  import { selectedCities } from '../stores/compareSelection.js';
+  import { CITY_KEY_TO_LAU, displayCityName } from '../cityMappings.js';
+  import CityDropdown from './CityDropdown.svelte';
+
+  function getDisplayName(cityKey) {
+    if (!cityKey) return '';
+    const lauName = CITY_KEY_TO_LAU[cityKey] || CITY_KEY_TO_LAU[cityKey.toLowerCase()];
+    if (lauName) {
+      const english = displayCityName(lauName);
+      if (english && english !== lauName) return english;
+    }
+    return cityKey.charAt(0).toUpperCase() + cityKey.slice(1);
+  }
 
   // Cities available in the dataset
   const cities = ['ancona', 'athene', 'barcelona', 'berlin', 'bologna', 'brussels', 'bucuresti', 'budapest', 'chisinau', 'debrecen', 'firenze', 'gdansk', 'genova', 'katowice', 'krakow', 'kyiv', 'københavn', 'lisboa', 'lyon', 'madrid', 'milano', 'munchen', 'oslo', 'palermo', 'paris', 'praha', 'roma', 'sevilla', 'sibiu', 'stockholm', 'torino', 'warszawa', 'wien', 'wrocław', 'zagreb', 'łodz'];
 
   let selectedCity = $state('brussels');
+  let prevSelectedCitiesRef = [];
+  
+  // Auto-switch to newly selected city from dropdown
+  $effect(() => {
+    const current = $selectedCities;
+    if (current.length > 0) {
+      // Find newly added city
+      const newCity = current.find(c => !prevSelectedCitiesRef.includes(c));
+      if (newCity && cities.includes(newCity)) {
+        selectedCity = newCity;
+      } else if (cities.includes(current[0]) && !cities.includes(selectedCity)) {
+        // Fallback to first selected city if current isn't valid
+        selectedCity = current[0];
+      }
+    }
+    prevSelectedCitiesRef = [...current];
+  });
+
   let geoData = $state.raw(null);
   let width = $state(0);
   let height = $state(0);
@@ -26,6 +57,14 @@
   // Geometry arrays (merged for performance)
   let layers = $state({ female: [], male: [], other: [] });
   let counts = $state({ female: 0, male: 0, other: 0 });
+
+  // Calculate percentages
+  let totalStreets = $derived(counts.female + counts.male + counts.other);
+  let percentages = $derived({
+    female: totalStreets > 0 ? ((counts.female / totalStreets) * 100).toFixed(1) : 0,
+    male: totalStreets > 0 ? ((counts.male / totalStreets) * 100).toFixed(1) : 0,
+    other: totalStreets > 0 ? ((counts.other / totalStreets) * 100).toFixed(1) : 0
+  });
 
   // Projection for zooming and panning
   let scale = $derived(baseScale * (1 + zoom / 50));
@@ -166,11 +205,7 @@
   <div class="header">
     <h1>Street Names Gender</h1>
     <div class="controls">
-      <select bind:value={selectedCity}>
-        {#each cities as city}
-          <option value={city}>{city}</option>
-        {/each}
-      </select>
+      <CityDropdown />
       <div class="slider-control">
         <label for="zoom">Zoom</label>
         <input 
@@ -219,9 +254,24 @@
 
     {#if geoData}
       <div class="legend">
-        <div class="item"><span class="box female"></span> Female ({counts.female})</div>
-        <div class="item"><span class="box male"></span> Male ({counts.male})</div>
-        <div class="item"><span class="box other"></span> Other ({counts.other})</div>
+        <div class="item"><span class="box female"></span> Female ({percentages.female}%)</div>
+        <div class="item"><span class="box male"></span> Male ({percentages.male}%)</div>
+        <div class="item"><span class="box other"></span> Other ({percentages.other}%)</div>
+      </div>
+    {/if}
+
+    {#if $selectedCities.length > 0}
+      <div class="city-selector">
+        <span class="city-selector-label">Selected cities:</span>
+        {#each $selectedCities as city}
+          <button 
+            class="city-btn"
+            class:active={selectedCity === city}
+            onclick={() => selectedCity = city}
+          >
+            {getDisplayName(city)}
+          </button>
+        {/each}
       </div>
     {/if}
 
@@ -282,11 +332,58 @@
   /* Allow SVG to overflow so we can pan to see hidden parts */
   :global(.map-container svg) { overflow: visible; }
 
+  /* Make streets show pointer cursor on hover */
+  :global(.map-container svg path) { cursor: pointer; }
+
   .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #9ca3af; }
 
   .legend { position: absolute; bottom: 1rem; right: 1rem; background: rgba(31, 41, 55, 0.9); padding: 1rem; border-radius: 0.5rem; border: 1px solid #374151; }
   .item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; font-size: 0.9rem; }
   .box { width: 1rem; height: 1rem; border-radius: 0.25rem; }
+
+  .city-selector {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: rgba(31, 41, 55, 0.9);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #374151;
+    z-index: 5;
+  }
+
+  .city-selector-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .city-btn {
+    padding: 0.5rem 1rem;
+    background: #374151;
+    border: 1px solid #4b5563;
+    border-radius: 0.375rem;
+    color: #f3f4f6;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+
+  .city-btn:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+  }
+
+  .city-btn.active {
+    background: #fb923c;
+    border-color: #fdba74;
+    color: white;
+  }
   
   .female { background: #fb923c; }
   .male { background: #60a5fa; }

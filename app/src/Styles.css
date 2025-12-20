@@ -80,6 +80,11 @@ h1 {
     cursor: grabbing; 
 }
 
+/* City circles show pointer cursor to indicate clickability */
+.map-container circle {
+    cursor: pointer !important;
+}
+
 /* ---------------------Controls -----------------------*/
 .controls { 
     display: flex; 
