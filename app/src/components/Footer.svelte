@@ -3,7 +3,7 @@
 </script>
 
 <footer>
-  <p>&copy; 2025 Interactive Data Visualization. All rights reserved.</p>
+  <p>&copy; 2025 Bil Jonas; Fronhoffs Gaëlle; Samyns Alex; Wallens Niels. All rights reserved.</p>
 </footer>
 
 <style>
