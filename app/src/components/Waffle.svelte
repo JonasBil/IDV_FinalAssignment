@@ -190,7 +190,43 @@ let waffleSquares = $derived.by(() => {
         if (idx >= 0) squares.splice(idx, 1);
         i--; diff++;}}}
   
-  return squares;});
+  // Build a map of category -> count for sorting
+  const categoryCount = new Map();
+  allocations.forEach(a => categoryCount.set(a.label, a.n));
+  
+  // Sort squares by category to ensure same entries are grouped together
+  // Sort from smallest count to biggest, with "Other" and "Not Identified" at the end
+  squares.sort((a, b) => {
+    const aLabel = a.category;
+    const bLabel = b.category;
+    
+    // Keep "Other" and "Not Identified" at the end
+    const getScore = (label) => {
+      if (label === 'Not Identified') return 2;
+      if (label === 'Other') return 1;
+      return 0;
+    };
+    
+    const scoreA = getScore(aLabel);
+    const scoreB = getScore(bLabel);
+    
+    if (scoreA !== scoreB) return scoreA - scoreB;
+    
+    // Sort by count (biggest to smallest, so smallest appears at top when rendered bottom-to-top)
+    const countA = categoryCount.get(aLabel) ?? 0;
+    const countB = categoryCount.get(bLabel) ?? 0;
+    return countB - countA;
+  });
+  
+  // Mirror over x-axis by reversing rows
+  const mirrored = [];
+  for (let row = GRID_ROWS - 1; row >= 0; row--) {
+    for (let col = 0; col < GRID_COLS; col++) {
+      mirrored.push(squares[row * GRID_COLS + col]);
+    }
+  }
+  
+  return mirrored;});
 
 
 
@@ -337,7 +373,43 @@ let waffleSquares_2 = $derived.by(() => {
         if (idx >= 0) squares.splice(idx, 1);
         i--; diff++;}}}
   
-  return squares;});
+  // Build a map of category -> count for sorting
+  const categoryCount = new Map();
+  allocations.forEach(a => categoryCount.set(a.label, a.n));
+  
+  // Sort squares by category to ensure same entries are grouped together
+  // Sort from smallest count to biggest, with "Other" and "Not Identified" at the end
+  squares.sort((a, b) => {
+    const aLabel = a.category;
+    const bLabel = b.category;
+    
+    // Keep "Other" and "Not Identified" at the end
+    const getScore = (label) => {
+      if (label === 'Not Identified') return 2;
+      if (label === 'Other') return 1;
+      return 0;
+    };
+    
+    const scoreA = getScore(aLabel);
+    const scoreB = getScore(bLabel);
+    
+    if (scoreA !== scoreB) return scoreA - scoreB;
+    
+    // Sort by count (biggest to smallest, so smallest appears at top when rendered bottom-to-top)
+    const countA = categoryCount.get(aLabel) ?? 0;
+    const countB = categoryCount.get(bLabel) ?? 0;
+    return countB - countA;
+  });
+  
+  // Mirror over x-axis by reversing rows
+  const mirrored = [];
+  for (let row = GRID_ROWS - 1; row >= 0; row--) {
+    for (let col = 0; col < GRID_COLS; col++) {
+      mirrored.push(squares[row * GRID_COLS + col]);
+    }
+  }
+  
+  return mirrored;});
 
 // Color function for city 2
 function getBarColor_2(d) {
