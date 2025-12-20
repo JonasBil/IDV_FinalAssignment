@@ -127,7 +127,8 @@ let top3_city1 = $derived.by(() => {
 // Create color scale for countries
 let colorScale = $derived.by(() => {
   const countries = filtered_aggregated_data.map(d => d.country_of_citizenship_label); //mapping the labels of countries
-  const colors = d3.schemeTableau10.concat(d3.schemePaired); // Combined color schemes
+ // const colors = d3.schemeTableau10.concat(d3.schemePaired); // Combined color schemes
+  const colors = d3.schemeSet1.concat(d3.schemeSet2); // Combined color schemes
   
   const scale = d3.scaleOrdinal()   //making the actual colorscale
     .domain(countries)
@@ -311,7 +312,7 @@ let top3_city2 = $derived.by(() => {
 // Create color scale for countries for city 2
 let colorScale_2 = $derived.by(() => {
   const countries = filtered_aggregated_data_2.map(d => d.country_of_citizenship_label);
-  const colors = d3.schemeTableau10.concat(d3.schemePaired);
+  const colors = d3.schemeDark2.concat(d3.schemeSet2);
   
   const scale = d3.scaleOrdinal()
     .domain(countries)
@@ -458,9 +459,22 @@ function handleCellLeave(cityNum) {
 
 <div class="dropdown-container">
   <!-- <p>For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's regional culture in street names. One city might tend to name more streets to former or present inhabitants, other cities might emphasize different cultural backgrounds. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.</p> -->
-  <p class="selected-cities">
-    The cities that you are comparing are {displayCityName(Selected_city) ?? '—'}{Selected_city2 ? ` and ${displayCityName(Selected_city2)}` : ''}
+</div>
+
+<div class="waffle-intro">
+  <p>
+    For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's regional culture in street names. One city might tend to name more streets to former or present inhabitants, other cities might emphasize different cultural backgrounds. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.
   </p>
+
+  <div class="city-summary">
+    {#if Selected_city && Selected_city2}
+      <p>Comparing: <strong>{displayCityName(Selected_city)}</strong> vs <strong>{displayCityName(Selected_city2)}</strong></p>
+    {:else if Selected_city}
+      <p>Selected: <strong>{displayCityName(Selected_city)}</strong> — select a second city to compare.</p>
+    {:else}
+      <p>Select cities on the map to compare.</p>
+    {/if}
+  </div>
 </div>
 
 <div class="container">
@@ -593,17 +607,18 @@ function handleCellLeave(cityNum) {
 
 </div>
 
-<!-- Shared text box for both waffle charts (edit content as desired) -->
-<div class="description_box waffle-summary">
+</div>
+
+<!-- Shared text box for both waffle charts (separate box under the chart box) -->
+<div class="description_box waffle-top3">
   <p>
-    For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's regional culture in street names. One city might tend to name more streets to former or present inhabitants, other cities might emphasize different cultural backgrounds. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.
     Top 3 countries of citizenship for the honoured women in street names:
   </p>
   <p>
     {Selected_city ?? 'City A'}:
     {#if top3_city1.length}
       {#each top3_city1 as t, i (t.label)}
-        <span class="top3-item"><u>{t.label}</u> ({t.pct.toFixed(1)}%){#if i < top3_city1.length - 1}, {/if}</span>
+        <span class="top3-item" style="color: {colorScale(t.label)}"><strong>{t.label}</strong> ({t.pct.toFixed(1)}%){#if i < top3_city1.length - 1}, {/if}</span>
       {/each}
     {:else}
       —
@@ -613,19 +628,29 @@ function handleCellLeave(cityNum) {
     {Selected_city2 ?? 'City B'}:
     {#if top3_city2.length}
       {#each top3_city2 as t, i (t.label)}
-        <span class="top3-item"><u>{t.label}</u> ({t.pct.toFixed(1)}%){#if i < top3_city2.length - 1}, {/if}</span>
+        <span class="top3-item" style="color: {colorScale_2(t.label)}"><strong>{t.label}</strong> ({t.pct.toFixed(1)}%){#if i < top3_city2.length - 1}, {/if}</span>
       {/each}
     {:else}
       —
     {/if}
   </p>
 </div>
-</div>
 
 <style>
 
-.selected-cities {
-  margin-top: 6px;
+.waffle-intro {
+  margin: 0.25rem 2em 0.5rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.waffle-intro p {
+  margin: 0 0 0.35rem;
+}
+
+.city-summary p {
+  margin: 0 0 0.35rem;
 }
 
 /*the parent*/
@@ -651,9 +676,7 @@ function handleCellLeave(cityNum) {
 }
 
 
-.top3-item u {
-  text-underline-offset: 2px;
-}
+
 
 /* WaffleY handles layout; keep legend styles above */
 
@@ -699,5 +722,9 @@ function handleCellLeave(cityNum) {
   transform: translateY(-100%);
 }
 
+.top3-item {
+  display: inline-block;
+  margin-right: 0.6em;
+}
 
 </style>
