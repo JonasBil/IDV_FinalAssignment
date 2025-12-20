@@ -38,7 +38,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <footer class:rainbow={easterEggActive} onclick={triggerEasterEgg}>
-  <p>&copy; 2025 Bil Jonas; Fronhoffs Gaëlle; Samyns Alex; Wallens Niels. All rights reserved.</p>
+  <p>&copy; 2025 Bil Jonas; Fronhoffs Gaëlle; Samyn Alex; Wallens Niels. All rights reserved.</p>
 </footer>
 
 {#if easterEggActive}

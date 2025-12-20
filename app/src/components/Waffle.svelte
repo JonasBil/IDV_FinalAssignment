@@ -461,11 +461,6 @@ function handleCellLeave(cityNum) {
 
 <div class="charts-container">
 
-<div class="waffle-intro">
-  <p>
-    For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's <strong>regional culture</strong> in street names. One city might tend to name more streets to <strong>former or present inhabitants</strong>, other cities might emphasize <strong>different cultural backgrounds</strong>. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.
-  </p>
-</div>
 
 <div class="container">
 
@@ -601,7 +596,18 @@ function handleCellLeave(cityNum) {
 
 <!-- Shared text box for both waffle charts (separate box under the chart box) -->
 <div class="description_box waffle-top3">
+  <div>
   <p>
+  This visualization examines the national background of women honoured in street names,
+  revealing how cities position themselves through symbolic choices in commemoration.
+  By showing where honoured women come from, it becomes possible to assess whether street
+  naming practices emphasise <strong>local</strong> and <strong>regional</strong> figures or instead highlight
+  <strong>transnational</strong> and <strong>external</strong> cultural influences.
+  The waffle chart visualises the distribution of countries of citizenship among the honoured
+  women, allowing for comparison between cities and offering insight into how urban identity,
+  cultural affiliation, and recognition are expressed in the everyday fabric of the city.
+</p></div>
+<p>
     Top 3 countries of citizenship for the honoured women in street names:
   </p>
   <p>

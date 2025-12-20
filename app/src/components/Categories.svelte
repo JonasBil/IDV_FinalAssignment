@@ -285,8 +285,8 @@
 <div class="description_box">
   <p>
   This visualization makes the comparison between occupation categories among streets named after women in the selected city(ies).
-  The pie charts show how women honoured in street names are distributed across broad occupation
-  categories such as
+  The pie charts indicate the domains in which women made their impact and through which they were ultimately honoured in street names. 
+  The categories that were used to classify occupations are:
   <span class="cat culture">culture</span>,
   <span class="cat politics">politics</span>,
   <span class="cat religion">religion</span>,

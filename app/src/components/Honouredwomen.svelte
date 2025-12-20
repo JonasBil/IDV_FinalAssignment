@@ -238,9 +238,12 @@
 
 <!-- small summary below the chart showing means and comparison -->
   <div class="description_box" aria-live="polite">
-    <p> The histogram groups birth years into 10-year bins and counts how many honoured women
-      were born in each interval. This lets us compare the age cohorts represented in street names
-      between cities and spot if one city honours earlier or later-born figures. </p>
+    <p>   
+      The histogram groups women’s birth years into 10-year bins. 
+      Counting how many honoured women were born in each interval. 
+      Rather than simply showing age distributions, this reveals which historical cohorts of women were able to gain visibility and make a long lasting impact in their respective domains, ultimately leading to public recognition through street names. 
+      Comparing these distributions between cities highlights whether commemoration is concentrated around earlier or later periods, reflecting differences in when women were able to break through social, cultural, or political barriers.
+    </p>
     {#if selectedA}
       <p>
         {#if selectedB}
