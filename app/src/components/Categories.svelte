@@ -3,6 +3,7 @@
   import PieChart from './Categories_Piecharts.svelte';
   import { selectedCities } from '../stores/compareSelection.js';
   import { CITY_KEY_TO_LAU, displayCityName, normalizeCityKey } from '../cityMappings.js';
+  import CityDropdown from './CityDropdown.svelte';
 
   // Category colors (matching pie chart)
   const categoryColors = {
@@ -222,9 +223,12 @@
 
 <!-- UI -->
 
-<h1>
-  Representation of street names honouring women, grouped by occupation
-</h1>
+<div class="section-header">
+  <h1>
+    Representation of street names honouring women, grouped by occupation
+  </h1>
+  <CityDropdown />
+</div>
 
 <div class="charts-container">
 
@@ -296,6 +300,19 @@
 </div>
 
 <style>
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header h1 {
+    margin: 0;
+  }
+
   .main-title {
     text-align: center;
     font-size: 1.9rem;

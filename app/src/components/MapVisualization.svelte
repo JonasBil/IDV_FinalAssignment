@@ -166,6 +166,11 @@
   <div class="header">
     <h1>Street Names Gender</h1>
     <div class="controls">
+      <select bind:value={selectedCity}>
+        {#each cities as city}
+          <option value={city}>{city}</option>
+        {/each}
+      </select>
       <div class="slider-control">
         <label for="zoom">Zoom</label>
         <input 
@@ -176,11 +181,6 @@
           max="500" 
         />
       </div>
-      <select bind:value={selectedCity}>
-        {#each cities as city}
-          <option value={city}>{city}</option>
-        {/each}
-      </select>
     </div>
   </div>
 
@@ -278,7 +278,7 @@
 
 <style>
   .visualization-container { padding: 1rem; }
-  
+
   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   .controls { display: flex; align-items: center; gap: 1rem; }
   

@@ -4,6 +4,7 @@
   import { selectedCities } from "../stores/compareSelection.js";
   import '../Styles.css'
   import { CITY_KEY_TO_LAU, displayCityName, normalizeCityKey } from '../cityMappings.js';
+  import CityDropdown from './CityDropdown.svelte';
 
   // Bin size in years for the histogram
   const binSize = 10;
@@ -177,8 +178,9 @@
   }
 </script>
 <!-- Title -->
-<div class="header">
+<div class="section-header">
   <h1>Histogram of the date of birth of women in street names in selected cities</h1>
+  <CityDropdown />
 </div>
 
 <!-- Main cart component -->
@@ -262,6 +264,19 @@
     {/if}
   </div>
 <style>
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header h1 {
+      margin: 0;
+    }
+
     .selectors {
     display: flex;
     justify-content: center;

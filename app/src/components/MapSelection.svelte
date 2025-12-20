@@ -5,6 +5,7 @@
   import { selectedCities } from '../stores/compareSelection.js';
   import '../Styles.css';
   import { LAU_NAME_TO_CITY_KEY, normalizeCityKey, displayCityName, CITY_KEY_TO_LAU } from '../cityMappings.js';
+  import CityDropdown from './CityDropdown.svelte';
 
   let europe = $state(null);
   const width = 600;
@@ -242,7 +243,7 @@
       const english = displayCityName(lauName);
       if (english && english !== lauName) return english;
     }
-    // Fallback: capitalize city key
+    // capitalize city key
     const s = name.toString();
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
@@ -251,10 +252,9 @@
 
 <div class="visualization-container">
   <div class="header">
-    <h1>
-      Map of Europe
-    </h1>
+    <h1>Map of Europe</h1>
     <div class="controls">
+      <CityDropdown />
       <div class="slider-control">
         <label for="zoom">Zoom</label>
         <input 
@@ -354,18 +354,26 @@
       </div>
     {/if}
   </div>
-
-  <div class="selection-readout" aria-live="polite">
-    <div class="selection-title">Selected cities (max 2):</div>
-    {#if $selectedCities.length === 0}
-      <div class="selection-value">None</div>
-    {:else}
-      <div class="selection-value">{$selectedCities.map(displayCity).join(' vs ')}</div>
-    {/if}
-  </div>
 </div>
 
 <style>
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .header h1 {
+    margin: 0;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .map-container {
     display: flex;
     justify-content: center;
