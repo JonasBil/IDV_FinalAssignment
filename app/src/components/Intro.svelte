@@ -51,7 +51,8 @@
 
         In <strong>Chișinău</strong>, the imbalance is even sharper.
         Out of … eponymic streets, <span class="blue_bold">...</span> are named after
-        <span class="blue_bold">men</span>, which is less than <strong>...%</strong>.
+        <span class="blue_bold">men</span>, while <span class="orange_bold">...</span> are named after
+        <span class="orange_bold">women</span>, which is less than <strong>...%</strong>.
       </p>
 
       <p>
