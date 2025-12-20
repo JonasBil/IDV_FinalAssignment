@@ -1,4 +1,4 @@
-/* Colors */ 
+/* ---------------------Colors -----------------------*/ 
 
 .female { background: #fb923c; }
 .male { background: #60a5fa; }
@@ -8,16 +8,43 @@
 
 
 
-/* Text styles */
+/* ---------------------Text styles -----------------------*/
 
 
-h1 { margin: 0; font-size: 1.5rem; border-bottom: 3px solid #fb923c; display: inline-block; padding-bottom: 0.25rem; }
+h1 { 
+    margin: 0; 
+    font-size: 1.5rem; 
+    border-bottom: 3px solid #fb923c; 
+    display: inline-block; 
+    padding-bottom: 0.25rem; }
 
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; margin-top: 1rem; }
-.description_box { margin-top: 1.5rem; padding: 1rem; background: #1f2937; border-left: 3px solid #fb923c; color: #9ca3af; font-size: 0.85rem; line-height: 1.5; }
+.header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 1rem; 
+    margin-top: 1rem; }
 
-.orange_bold {color: #fb923c; font-weight: bold;}
-.blue_bold{color: #60a5fa; font-weight: bold;}
+.description_box { 
+    margin-top: 1.5rem; 
+    padding: 1rem; 
+    background: #1f2937; 
+    border-left: 3px solid #fb923c; 
+    color: #9ca3af; 
+    font-size: 0.85rem; 
+    line-height: 1.5; }
+
+.orange_bold {
+    color: #fb923c; 
+    font-weight: bold;}
+
+.blue_bold{
+    color: #60a5fa; 
+    ont-weight: bold;}
+
+
+
+/* ---------------------Visualization containers -----------------------*/
 
 .charts-container {
     margin-top: 2rem; 
@@ -30,4 +57,61 @@ h1 { margin: 0; font-size: 1.5rem; border-bottom: 3px solid #fb923c; display: in
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); 
     border-left: 3px; 
     padding: 1rem;
+}
+
+.visualization-container { 
+    padding: 0rem; 
+}
+
+.map-container { 
+    width: 100%; 
+    height: 600px; 
+    position: relative; 
+    display: flex;
+    justify-content: center;
+    background: #1f2937; 
+    border-radius: 0.5rem; 
+    overflow: hidden; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); 
+    cursor: grab; 
+}
+
+.map-container:active { 
+    cursor: grabbing; 
+}
+
+/* ---------------------Controls -----------------------*/
+.controls { 
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+}
+
+.slider-control { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    background: #1f2937; 
+    padding: 0.5rem 1rem; 
+    border-radius: 0.25rem; 
+    border: 1px solid #374151; 
+}
+
+.slider-control label { 
+    font-size: 0.9rem; 
+    font-weight: 500; 
+}
+
+.slider-control input[type=range] { 
+    width: 100px; 
+    accent-color: #fb923c; 
+    cursor: pointer; 
+}
+
+select { 
+    padding: 0.5rem; 
+    background: #1f2937; 
+    color: white; 
+    border: 1px solid #374151; 
+    border-radius: 0.25rem; 
 }

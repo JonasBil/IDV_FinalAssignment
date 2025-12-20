@@ -178,7 +178,7 @@
   }
 </script>
 <!-- Title -->
-<div class="section-header">
+<div class="header">
   <h1>Histogram of the date of birth of women in street names in selected cities</h1>
   <CityDropdown />
 </div>
@@ -264,19 +264,6 @@
     {/if}
   </div>
 <style>
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .section-header h1 {
-      margin: 0;
-    }
-
     .selectors {
     display: flex;
     justify-content: center;

@@ -250,8 +250,10 @@
 
 </script>
 
+
+<!-- Header -->
 <div class="visualization-container">
-  <div class="header">
+<div class="header">
     <h1>Map of Europe</h1>
     <div class="controls">
       <CityDropdown />
@@ -266,8 +268,9 @@
         />
       </div>
     </div>
-  </div>
+</div>
 
+<!-- Main map -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div 
     class="map-container" 
@@ -354,35 +357,18 @@
       </div>
     {/if}
   </div>
+
+  <div class="selection-readout" aria-live="polite">
+    <div class="selection-title">Selected cities (max 2):</div>
+    {#if $selectedCities.length === 0}
+      <div class="selection-value">None</div>
+    {:else}
+      <div class="selection-value">{$selectedCities.map(displayCity).join(' vs ')}</div>
+    {/if}
+  </div>
 </div>
 
 <style>
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  .header h1 {
-    margin: 0;
-  }
-
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .map-container {
-    display: flex;
-    justify-content: center;
-    background-color: #1f2937; /* Added background */
-    border-radius: 0.5rem;      /* Rounded corners */
-    overflow: hidden;           /* Contain the map on zoom */
-    position: relative;         /* For tooltip positioning */
-  }
-
   .plot-wrapper {
     position: relative;
   }
