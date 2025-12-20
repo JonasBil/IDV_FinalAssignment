@@ -223,7 +223,7 @@
 
 <!-- UI -->
 
-<div class="section-header">
+<div class="header">
   <h1>
     Representation of street names honouring women, grouped by occupation
   </h1>
@@ -300,19 +300,6 @@
 </div>
 
 <style>
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .section-header h1 {
-    margin: 0;
-  }
-
   .main-title {
     text-align: center;
     font-size: 1.9rem;

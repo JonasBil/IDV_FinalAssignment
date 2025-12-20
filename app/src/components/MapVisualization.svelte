@@ -277,20 +277,6 @@
 </div>
 
 <style>
-  .visualization-container { padding: 1rem; }
-
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .controls { display: flex; align-items: center; gap: 1rem; }
-  
-  .slider-control { display: flex; align-items: center; gap: 0.5rem; background: #1f2937; padding: 0.5rem 1rem; border-radius: 0.25rem; border: 1px solid #374151; }
-  .slider-control label { font-size: 0.9rem; font-weight: 500; }
-  .slider-control input[type=range] { width: 100px; accent-color: #fb923c; cursor: pointer; }
-
-  h1 { margin: 0; font-size: 1.5rem; border-bottom: 3px solid #fb923c; display: inline-block; padding-bottom: 0.25rem; }
-  select { padding: 0.5rem; background: #1f2937; color: white; border: 1px solid #374151; border-radius: 0.25rem; }
-
-  .map-container { width: 100%; height: 600px; position: relative; background: #1f2937; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); cursor: grab; }
-  .map-container:active { cursor: grabbing; }
   .movable { width: 100%; height: 100%; transform-origin: center; will-change: transform; }
   
   /* Allow SVG to overflow so we can pan to see hidden parts */
