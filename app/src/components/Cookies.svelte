@@ -147,7 +147,6 @@
     display: inline-block;
     margin: 0 auto 0.5rem auto;
     border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(2,6,23,0.35);
   }
 
 </style>
