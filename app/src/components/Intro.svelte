@@ -1,5 +1,18 @@
 <script>
+  import { selectedCities } from '../stores/compareSelection.js';
+  
   let showExample = false;
+
+  function toggleExample() {
+    showExample = !showExample;
+    if (showExample) {
+      // Set Copenhagen and Chisinau as selected cities
+      selectedCities.set(['københavn', 'chisinau']);
+    } else {
+      // Clear selection when hiding the example
+      selectedCities.clear();
+    }
+  }
 </script>
 
 <div class="intro">
@@ -33,7 +46,7 @@
   </p>
 
   <!-- KNOP -->
-  <button class="toggle-btn" on:click={() => showExample = !showExample}>
+  <button class="toggle-btn" on:click={toggleExample}>
     {showExample ? 'Hide example' : 'Show example: Copenhagen vs Chișinău'}
   </button>
 
