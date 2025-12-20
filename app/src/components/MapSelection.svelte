@@ -4,7 +4,7 @@
   import cityData from '../city_centers.json';
   import { selectedCities } from '../stores/compareSelection.js';
   import '../Styles.css';
-  import { LAU_NAME_TO_CITY_KEY, normalizeCityKey } from '../cityMappings.js';
+  import { LAU_NAME_TO_CITY_KEY, normalizeCityKey, displayCityName, CITY_KEY_TO_LAU } from '../cityMappings.js';
 
   let europe = $state(null);
   const width = 600;
@@ -61,7 +61,7 @@
     if (streetsLoading) return;
     streetsLoading = true;
 
-    const cacheKey = 'femalePctByCity_fromStreets_v2';
+    const cacheKey = 'femalePctByCity_fromStreets_v3';
     try {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
@@ -235,8 +235,16 @@
   loadFemalePctByCity();
 
   function displayCity(name) {
-    const s = (name ?? '').toString();
-    return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+    if (!name) return '';
+    // Try to get LAU name first, then use displayCityName for English name
+    const lauName = CITY_KEY_TO_LAU[name] || CITY_KEY_TO_LAU[name.toLowerCase()];
+    if (lauName) {
+      const english = displayCityName(lauName);
+      if (english && english !== lauName) return english;
+    }
+    // Fallback: capitalize city key
+    const s = name.toString();
+    return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
 </script>
