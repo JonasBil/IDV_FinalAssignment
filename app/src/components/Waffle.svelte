@@ -19,6 +19,38 @@ const Cities = Array.from(new Set(unmixed_aggregated_street_data_citizenship.map
 
 // Map-selected cities come from the `selectedCities` store (keys from `city_centers.json`).
 // Dataset cities (`lau_name`) are Title Case; build a lookup so keys like `wien` map to `Wien`.
+
+// Explicit mapping from city_centers.json keys to dataset lau_name values
+const CITY_KEY_TO_LAU = {
+  'berlin': 'Berlin, Stadt',
+  'munchen': 'München, Landeshauptstadt',
+  'münchen': 'München, Landeshauptstadt',
+  'munich': 'München, Landeshauptstadt',
+  'athene': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
+  'athens': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
+  'athen': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
+  'bucuresti': 'Municipiul București',
+  'bucharest': 'Municipiul București',
+  'sibiu': 'Municipiul Sibiu',
+  'oslo': 'Oslo kommune',
+  'zagreb': 'Grad Zagreb',
+  'lisboa': 'Lisbon',
+  'lisbon': 'Lisbon',
+  'gdansk': 'Gdańsk',
+  'gdańsk': 'Gdańsk',
+  'krakow': 'Kraków',
+  'kraków': 'Kraków',
+  'łodz': 'Łódź',
+  'lodz': 'Łódź',
+  'wrocław': 'Wrocław',
+  'wroclaw': 'Wrocław',
+  'københavn': 'København',
+  'kobenhavn': 'København',
+  'copenhagen': 'København',
+  'warszawa': 'Warszawa',
+  'warsaw': 'Warszawa'
+};
+
 function normalizeCityKey(v) {
   return (v ?? '')
     .toString()
@@ -30,9 +62,18 @@ function normalizeCityKey(v) {
 
 let cityKeyToLauName = $derived.by(() => {
   const map = new Map();
+  // First add explicit mappings
+  for (const [key, lau] of Object.entries(CITY_KEY_TO_LAU)) {
+    map.set(key, lau);
+    map.set(normalizeCityKey(key), lau);
+  }
+  // Then add automatic mappings from dataset
   for (const city of Cities) {
-    map.set(city.toLowerCase(), city);
-    map.set(normalizeCityKey(city), city);
+    const lower = city.toLowerCase();
+    const normalized = normalizeCityKey(city);
+    // Only add if not already mapped
+    if (!map.has(lower)) map.set(lower, city);
+    if (!map.has(normalized)) map.set(normalized, city);
   }
   return map;
 });

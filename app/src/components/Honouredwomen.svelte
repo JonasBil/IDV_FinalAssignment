@@ -9,30 +9,48 @@
 
   // Selected cities for comparison (driven by MapSelection via store)
 
-  const CITY_ALIASES = {
-    // Common diacritics/English variants
-    'muenchen': 'munchen',
-    'münchen': 'munchen',
-    'munich': 'munchen',
-    'athen': 'athene',
-    'athens': 'athene',
-    'gdańsk': 'gdansk',
-    'gdansk': 'gdansk',
-    'łódź': 'łodz',
-    'lodz': 'łodz',
-    'kobenhavn': 'københavn'
+  // Explicit mapping from city_centers.json keys to dataset lau_name values
+  const CITY_KEY_TO_LAU = {
+    'berlin': 'Berlin, Stadt',
+    'munchen': 'München, Landeshauptstadt',
+    'münchen': 'München, Landeshauptstadt',
+    'munich': 'München, Landeshauptstadt',
+    'athene': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
+    'athens': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
+    'athen': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
+    'bucuresti': 'Municipiul București',
+    'bucharest': 'Municipiul București',
+    'sibiu': 'Municipiul Sibiu',
+    'oslo': 'Oslo kommune',
+    'zagreb': 'Grad Zagreb',
+    'lisboa': 'Lisbon',
+    'lisbon': 'Lisbon',
+    'gdansk': 'Gdańsk',
+    'gdańsk': 'Gdańsk',
+    'krakow': 'Kraków',
+    'kraków': 'Kraków',
+    'łodz': 'Łódź',
+    'lodz': 'Łódź',
+    'wrocław': 'Wrocław',
+    'wroclaw': 'Wrocław',
+    'københavn': 'København',
+    'kobenhavn': 'København',
+    'copenhagen': 'København',
+    'warszawa': 'Warszawa',
+    'warsaw': 'Warszawa'
   };
 
   function normalizeCityKey(name) {
     const raw = (name ?? '').toString().trim().toLowerCase();
     if (!raw) return '';
 
-    const directAlias = CITY_ALIASES[raw];
-    if (directAlias) return directAlias;
+    // Check explicit mapping first
+    if (CITY_KEY_TO_LAU[raw]) return raw;
 
     const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
-    const strippedAlias = CITY_ALIASES[stripped];
-    return strippedAlias || stripped;
+    if (CITY_KEY_TO_LAU[stripped]) return stripped;
+
+    return stripped;
   }
 
 // Extract year from date_of_birth field
@@ -70,20 +88,33 @@
   // colour scheme for cities (kept in sync with the Plot `color.scheme` below)
   const colorScheme = ['#2ecc71', '#e74c3c', '#3498db', '#f39c12'];
 
+  const cityKeyToSummaryCity = (() => {
+    const map = new Map();
+    // First add explicit mappings
+    for (const [key, lau] of Object.entries(CITY_KEY_TO_LAU)) {
+      map.set(key, lau);
+      map.set(normalizeCityKey(key), lau);
+    }
+    // Then add automatic mappings from dataset
+    for (const city of cityOptions) {
+      const lower = city.toLowerCase();
+      const normalized = normalizeCityKey(city);
+      if (!map.has(lower)) map.set(lower, city);
+      if (!map.has(normalized)) map.set(normalized, city);
+    }
+    return map;
+  })();
+
+  const selectedKeys = $derived($selectedCities || []);
+  const selectedA = $derived(cityKeyToSummaryCity.get(normalizeCityKey(selectedKeys[0])) ?? cityKeyToSummaryCity.get(selectedKeys[0]) ?? "");
+  const selectedB = $derived(cityKeyToSummaryCity.get(normalizeCityKey(selectedKeys[1])) ?? cityKeyToSummaryCity.get(selectedKeys[1]) ?? "");
+
   // reactive domain/map using the project's $derived helper
   const colorDomain = $derived(selectedB ? [selectedA, selectedB] : [selectedA]);
   const colorMap = $derived((() => {
     const dom = colorDomain || [];
     return Object.fromEntries(dom.map((c, i) => [c, colorScheme[i % colorScheme.length]]));
   })());
-
-  const cityKeyToSummaryCity = new Map(
-    cityOptions.map((c) => [normalizeCityKey(c), c])
-  );
-
-  const selectedKeys = $derived($selectedCities || []);
-  const selectedA = $derived(cityKeyToSummaryCity.get(normalizeCityKey(selectedKeys[0])) || "");
-  const selectedB = $derived(cityKeyToSummaryCity.get(normalizeCityKey(selectedKeys[1])) || "");
 
   function buildPlotRows(cityA, cityB) {
     const yearsA = summary[cityA] || {};

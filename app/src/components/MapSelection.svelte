@@ -26,31 +26,39 @@
   let streetsLoading = $state(false);
 
   const cityKeySet = new Set(Object.keys(cityData));
-  const CITY_ALIASES = {
-    // Common diacritics/English variants
-    'münchen': 'munchen',
-    'munich': 'munchen',
-    'athen': 'athene',
-    'athens': 'athene',
+  
+  // Mapping from dataset lau_name values to city_centers.json keys
+  const LAU_NAME_TO_CITY_KEY = {
+    'berlin, stadt': 'berlin',
+    'münchen, landeshauptstadt': 'munchen',
+    'ψευδοδημοτική κοινότητα αθηναίων': 'athene',
+    'municipiul bucurești': 'bucuresti',
+    'municipiul sibiu': 'sibiu',
+    'oslo kommune': 'oslo',
+    'grad zagreb': 'zagreb',
+    'lisbon': 'lisboa',
     'gdańsk': 'gdansk',
-    'gdansk': 'gdansk',
+    'kraków': 'krakow',
     'łódź': 'łodz',
-    'lodz': 'łodz',
-    'kobenhavn': 'københavn'
+    'wrocław': 'wrocław',
+    'københavn': 'københavn',
+    'warszawa': 'warszawa'
   };
 
   function toCityKey(name) {
     const raw = (name ?? '').toString().trim().toLowerCase();
+    if (!raw) return null;
+    
+    // Check direct mapping from dataset lau_name to city key
+    if (LAU_NAME_TO_CITY_KEY[raw]) return LAU_NAME_TO_CITY_KEY[raw];
+    
+    // Check if it's already a valid city key
     if (cityKeySet.has(raw)) return raw;
 
-    const directAlias = CITY_ALIASES[raw];
-    if (directAlias && cityKeySet.has(directAlias)) return directAlias;
-
+    // Strip diacritics and check mapping
     const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
+    if (LAU_NAME_TO_CITY_KEY[stripped]) return LAU_NAME_TO_CITY_KEY[stripped];
     if (cityKeySet.has(stripped)) return stripped;
-
-    const strippedAlias = CITY_ALIASES[stripped];
-    if (strippedAlias && cityKeySet.has(strippedAlias)) return strippedAlias;
 
     return raw;
   }
@@ -69,7 +77,7 @@
     if (streetsLoading) return;
     streetsLoading = true;
 
-    const cacheKey = 'femalePctByCity_fromStreets_v1';
+    const cacheKey = 'femalePctByCity_fromStreets_v2';
     try {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
@@ -346,7 +354,7 @@
     text-transform: capitalize;
   }
 
-   .slider-control { display: flex; align-items: center; gap: 0.5rem; background: #1f2937; padding: 0.5rem 1rem; border-radius: 0.25rem; border: 1px solid #374151; }
+  .slider-control { display: flex; align-items: center; gap: 0.5rem; background: #1f2937; padding: 0.5rem 1rem; border-radius: 0.25rem; border: 1px solid #374151; }
   .slider-control label { font-size: 0.9rem; font-weight: 500; }
   .slider-control input[type=range] { width: 100px; accent-color: #fb923c; cursor: pointer; }
 </style>
