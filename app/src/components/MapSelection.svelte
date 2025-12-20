@@ -254,7 +254,10 @@
 <!-- Header -->
 <div class="visualization-container">
 <div class="header">
-    <h1>Map of Europe</h1>
+    <div class="title-section">
+      <h1>Select Cities</h1>
+      <p class="subtitle">Click on up to 2 cities to compare streets named after women</p>
+    </div>
     <div class="controls">
       <CityDropdown />
       <div class="slider-control">
@@ -358,12 +361,13 @@
     {/if}
   </div>
 
-  <div class="selection-readout" aria-live="polite">
-    <div class="selection-title">Selected cities (max 2):</div>
+  <div class="description_box" aria-live="polite">
     {#if $selectedCities.length === 0}
-      <div class="selection-value">None</div>
+      No cities selected yet. Click on a city to select it.
+    {:else if $selectedCities.length === 1}
+      You selected <span class="orange_bold">{displayCity($selectedCities[0])}</span>, which has {#if typeof femalePctByCity[$selectedCities[0]] === 'number'}{femalePctByCity[$selectedCities[0]].toFixed(1)}%{:else}...{/if} female streets. Select another city to compare.
     {:else}
-      <div class="selection-value">{$selectedCities.map(displayCity).join(' vs ')}</div>
+      You selected <span class="orange_bold">{displayCity($selectedCities[0])}</span> ({#if typeof femalePctByCity[$selectedCities[0]] === 'number'}{femalePctByCity[$selectedCities[0]].toFixed(1)}%{:else}--{/if} female streets) and <span class="orange_bold">{displayCity($selectedCities[1])}</span> ({#if typeof femalePctByCity[$selectedCities[1]] === 'number'}{femalePctByCity[$selectedCities[1]].toFixed(1)}%{:else}--{/if} female streets).
     {/if}
   </div>
 </div>
@@ -403,24 +407,6 @@
     font-size: 0.9rem;
     color: #d1d5db;
     font-weight: normal;
-  }
-
-  .selection-readout {
-    margin-top: 0.75rem;
-    padding: 0.75rem 1rem;
-    background-color: #1f2937;
-    border-radius: 0.5rem;
-  }
-
-  .selection-title {
-    font-size: 0.9rem;
-    color: #9ca3af;
-  }
-
-  .selection-value {
-    margin-top: 0.25rem;
-    color: #f3f4f6;
-    text-transform: capitalize;
   }
 
   .pulse-ring {
