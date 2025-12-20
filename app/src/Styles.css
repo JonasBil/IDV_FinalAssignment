@@ -4,26 +4,23 @@
 .male { background: #60a5fa; }
 .other { background: #5c6c86; }
 
-
-
-
-
 /* ---------------------Text styles -----------------------*/
-
 
 h1 { 
     margin: 0; 
     font-size: 1.5rem; 
     border-bottom: 3px solid #fb923c; 
     display: inline-block; 
-    padding-bottom: 0.25rem; }
+    padding-bottom: 0.25rem; 
+}
 
 .header { 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
     margin-bottom: 1rem; 
-    margin-top: 1rem; }
+    margin-top: 1rem; 
+}
 
 .description_box { 
     margin-top: 1.5rem; 
@@ -32,17 +29,18 @@ h1 {
     border-left: 3px solid #fb923c; 
     color: #9ca3af; 
     font-size: 0.85rem; 
-    line-height: 1.5; }
+    line-height: 1.5; 
+}
 
 .orange_bold {
     color: #fb923c; 
-    font-weight: bold;}
+    font-weight: bold;
+}
 
-.blue_bold{
+.blue_bold {
     color: #60a5fa; 
-    ont-weight: bold;}
-
-
+    font-weight: bold;
+}
 
 /* ---------------------Visualization containers -----------------------*/
 
@@ -86,6 +84,7 @@ h1 {
 }
 
 /* ---------------------Controls -----------------------*/
+
 .controls { 
     display: flex; 
     align-items: center; 

@@ -264,12 +264,6 @@
     {/if}
   </div>
 <style>
-    .selectors {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin-bottom: 2rem;
-  }
   .plot { width: 100%; position: relative; }
 
   .bar-tooltip {

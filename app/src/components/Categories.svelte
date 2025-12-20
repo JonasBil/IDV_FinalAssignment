@@ -300,20 +300,6 @@
 </div>
 
 <style>
-  .main-title {
-    text-align: center;
-    font-size: 1.9rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-  }
-
-  .selectors {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin-bottom: 2rem;
-  }
-
   .charts {
     display: flex;
     justify-content: center;
@@ -331,43 +317,8 @@
     margin-bottom: 0.5rem;
   }
 
-  .comparison-box {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 1.5rem;
-    background: #1f2937;
-    border: 1px solid #374151;
-    border-radius: 0.5rem;
-    line-height: 1.5;
-    color: #e5e7eb;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-  }
-
-  .comparison-box h4 {
-    margin-top: 0;
-    margin-bottom: 0.8rem;
-    color: #f3f4f6;
-    font-size: 1.1rem;
-  }
-
-  .comparison-box p {
-    font-size: 0.9rem;
-    color: #d1d5db;
-    margin-bottom: 0.4rem;
-  }
-
-  .main-caption {
-    text-align: center;
-    max-width: 750px;
-    margin: 2.5rem auto;
-    font-size: 0.9rem;
-    color: #666;
-    line-height: 1.4;
-    font-style: italic;
-  }
-
   .description_box .cat {
-  font-weight: 600;
+    font-weight: 600;
   }
 
   /* same colors as legend & pies */

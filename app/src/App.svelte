@@ -78,21 +78,11 @@
     margin: 0 auto;
   }
 
-  .charts-container {
-    margin-top: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    background-color: #1f2937;
-  }
-
   /* dim the background slightly while prompt is visible */
   .content[aria-hidden="true"] {
     filter: blur(1px) brightness(0.9);
     pointer-events: none;
     user-select: none;
   }
-
-
 </style>
 

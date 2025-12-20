@@ -25,7 +25,7 @@
 </div>
 
 <style>
-      .intro {
+  .intro {
     max-width: 1000px;
     margin: 3rem auto 2rem;
     padding: 0 1.5rem;
@@ -38,16 +38,5 @@
     color: #9ca3af;
     font-style: italic;
   }
-  .cat {
-  font-weight: 600;
-  }
-
-  /* category colors same as legend */
-  .culture  { color: #17BECF; }
-  .politics { color: #FFC20A; }
-  .religion { color: #00668E; }
-  .science  { color: #EF553B; }
-  .military { color: #FF9920; }
-  .others   { color: #9E48D0; }
 </style>
 
