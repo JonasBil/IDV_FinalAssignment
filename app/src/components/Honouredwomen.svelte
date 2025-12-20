@@ -3,55 +3,12 @@
   import { Plot, BarY, GridY, RuleY, groupX } from "svelteplot";
   import { selectedCities } from "../stores/compareSelection.js";
   import '../Styles.css'
+  import { CITY_KEY_TO_LAU, displayCityName, normalizeCityKey } from '../cityMappings.js';
 
   // Bin size in years for the histogram
   const binSize = 10;
 
   // Selected cities for comparison (driven by MapSelection via store)
-
-  // Explicit mapping from city_centers.json keys to dataset lau_name values
-  const CITY_KEY_TO_LAU = {
-    'berlin': 'Berlin, Stadt',
-    'munchen': 'München, Landeshauptstadt',
-    'münchen': 'München, Landeshauptstadt',
-    'munich': 'München, Landeshauptstadt',
-    'athene': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-    'athens': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-    'athen': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-    'bucuresti': 'Municipiul București',
-    'bucharest': 'Municipiul București',
-    'sibiu': 'Municipiul Sibiu',
-    'oslo': 'Oslo kommune',
-    'zagreb': 'Grad Zagreb',
-    'lisboa': 'Lisbon',
-    'lisbon': 'Lisbon',
-    'gdansk': 'Gdańsk',
-    'gdańsk': 'Gdańsk',
-    'krakow': 'Kraków',
-    'kraków': 'Kraków',
-    'łodz': 'Łódź',
-    'lodz': 'Łódź',
-    'wrocław': 'Wrocław',
-    'wroclaw': 'Wrocław',
-    'københavn': 'København',
-    'kobenhavn': 'København',
-    'copenhagen': 'København',
-    'warszawa': 'Warszawa',
-    'warsaw': 'Warszawa'
-  };
-
-  function normalizeCityKey(name) {
-    const raw = (name ?? '').toString().trim().toLowerCase();
-    if (!raw) return '';
-
-    // Check explicit mapping first
-    if (CITY_KEY_TO_LAU[raw]) return raw;
-
-    const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
-    if (CITY_KEY_TO_LAU[stripped]) return stripped;
-
-    return stripped;
-  }
 
 // Extract year from date_of_birth field
   function extractYearFromDob(dob) {
@@ -140,14 +97,14 @@
     for (const binStart of sortedBins) {
       rows.push({
         bin: `${binStart}-${binStart + binSize - 1}`,
-        city: cityA,
+        city: displayCityName(cityA),
         count: binCounts[binStart].a || 0
       });
 
       if (cityB) {
         rows.push({
           bin: `${binStart}-${binStart + binSize - 1}`,
-          city: cityB,
+          city: displayCityName(cityB),
           count: binCounts[binStart].b || 0
         });
       }
@@ -229,12 +186,12 @@
   <div class="selectors">
     <div>
       <label>City 1</label><br />
-      <strong>{selectedA || '(select on map)'}</strong>
+      <strong>{displayCityName(selectedA) || '(select on map)'}</strong>
     </div>
 
     <div>
       <label>City 2</label><br />
-      <strong>{selectedB || '(optional)'}</strong>
+      <strong>{displayCityName(selectedB) || '(optional)'}</strong>
     </div>
   </div>
 
@@ -246,12 +203,12 @@
         <div><strong>Count (women)</strong></div>
 
         <div>
-          {selectedA}: {countsByBin?.[hoveredBin]?.[selectedA] ?? 0}
+          {displayCityName(selectedA)}: {countsByBin?.[hoveredBin]?.[selectedA] ?? 0}
         </div>
 
         {#if selectedB}
           <div>
-            {selectedB}: {countsByBin?.[hoveredBin]?.[selectedB] ?? 0}
+            {displayCityName(selectedB)}: {countsByBin?.[hoveredBin]?.[selectedB] ?? 0}
           </div>
         {/if}
       </div>
@@ -261,7 +218,7 @@
   color={{
     legend: true,
     scheme: ['#2ecc71', '#e74c3c'],   // colours to use
-    domain: selectedB ? [selectedA, selectedB] : [selectedA] // map colours to city names
+    domain: selectedB ? [displayCityName(selectedA), displayCityName(selectedB)] : [displayCityName(selectedA)] // map colours to city names
   }}
   x={{ label: "Birth year of women", tickRotate: -45 }}
   y={{ label: "Count (women)" }}

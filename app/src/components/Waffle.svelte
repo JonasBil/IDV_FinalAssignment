@@ -3,6 +3,7 @@ import {unmixed_aggregated_street_data_citizenship} from '../unmixed_aggregated_
 import { Plot, WaffleY, AxisX } from 'svelteplot'
 import * as d3 from 'd3'
 import {selectedCities} from '../stores/compareSelection.js';
+import { CITY_KEY_TO_LAU, displayCityName, normalizeCityKey } from '../cityMappings.js';
 
 // Hover state for waffle interactivity
 let hoveredSquare1 = $state(null);
@@ -19,46 +20,6 @@ const Cities = Array.from(new Set(unmixed_aggregated_street_data_citizenship.map
 
 // Map-selected cities come from the `selectedCities` store (keys from `city_centers.json`).
 // Dataset cities (`lau_name`) are Title Case; build a lookup so keys like `wien` map to `Wien`.
-
-// Explicit mapping from city_centers.json keys to dataset lau_name values
-const CITY_KEY_TO_LAU = {
-  'berlin': 'Berlin, Stadt',
-  'munchen': 'München, Landeshauptstadt',
-  'münchen': 'München, Landeshauptstadt',
-  'munich': 'München, Landeshauptstadt',
-  'athene': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-  'athens': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-  'athen': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-  'bucuresti': 'Municipiul București',
-  'bucharest': 'Municipiul București',
-  'sibiu': 'Municipiul Sibiu',
-  'oslo': 'Oslo kommune',
-  'zagreb': 'Grad Zagreb',
-  'lisboa': 'Lisbon',
-  'lisbon': 'Lisbon',
-  'gdansk': 'Gdańsk',
-  'gdańsk': 'Gdańsk',
-  'krakow': 'Kraków',
-  'kraków': 'Kraków',
-  'łodz': 'Łódź',
-  'lodz': 'Łódź',
-  'wrocław': 'Wrocław',
-  'wroclaw': 'Wrocław',
-  'københavn': 'København',
-  'kobenhavn': 'København',
-  'copenhagen': 'København',
-  'warszawa': 'Warszawa',
-  'warsaw': 'Warszawa'
-};
-
-function normalizeCityKey(v) {
-  return (v ?? '')
-    .toString()
-    .trim()
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/\p{Diacritic}/gu, '');
-}
 
 let cityKeyToLauName = $derived.by(() => {
   const map = new Map();
@@ -190,7 +151,7 @@ let waffleSquares = $derived.by(() => {
     const n = Math.round(proportion * TOTAL_SQUARES);
     allocated += n;
     return { 
-      lau_name: Selected_city, 
+      lau_name: displayCityName(Selected_city), 
       label: r.country_of_citizenship_label, 
       n, 
       proportion };});
@@ -219,14 +180,14 @@ let waffleSquares = $derived.by(() => {
     if (diff > 0) {
       let i = 0;
       while (diff > 0) {squares.push({ 
-          lau_name: Selected_city, 
+          lau_name: displayCityName(Selected_city), 
           category: byRemainder[i % byRemainder.length].label, 
           value: 1 });i++; diff--;}} 
     else {
       let i = byRemainder.length - 1;
       while (diff < 0 && squares.length) {
         const idx = squares.findIndex(s => 
-          s.lau_name === Selected_city && 
+          s.lau_name === displayCityName(Selected_city) && 
           s.category === byRemainder[i % byRemainder.length].label);
         if (idx >= 0) squares.splice(idx, 1);
         i--; diff++;}}}
@@ -373,7 +334,7 @@ let waffleSquares_2 = $derived.by(() => {
     const n = Math.round(proportion * TOTAL_SQUARES);
     allocated += n;
     return { 
-      lau_name: Selected_city2, 
+      lau_name: displayCityName(Selected_city2), 
       label: r.country_of_citizenship_label, 
       n, 
       proportion };});
@@ -402,14 +363,14 @@ let waffleSquares_2 = $derived.by(() => {
     if (diff > 0) {
       let i = 0;
       while (diff > 0) {squares.push({ 
-          lau_name: Selected_city2, 
+          lau_name: displayCityName(Selected_city2), 
           category: byRemainder[i % byRemainder.length].label, 
           value: 1 });i++; diff--;}} 
     else {
       let i = byRemainder.length - 1;
       while (diff < 0 && squares.length) {
         const idx = squares.findIndex(s => 
-          s.lau_name === Selected_city2 && 
+          s.lau_name === displayCityName(Selected_city2) && 
           s.category === byRemainder[i % byRemainder.length].label);
         if (idx >= 0) squares.splice(idx, 1);
         i--; diff++;}}}
@@ -498,7 +459,7 @@ function handleCellLeave(cityNum) {
 <div class="dropdown-container">
   <!-- <p>For these cities, we can also explore where the honoured women come from. This can tell you something about how a city wants to profile itself by using it's regional culture in street names. One city might tend to name more streets to former or present inhabitants, other cities might emphasize different cultural backgrounds. A waffle chart can be used to visualise the distribution by country of citizenship among the honoured women.</p> -->
   <p class="selected-cities">
-    The cities that you are comparing are {Selected_city ?? '—'}{Selected_city2 ? ` and ${Selected_city2}` : ''}
+    The cities that you are comparing are {displayCityName(Selected_city) ?? '—'}{Selected_city2 ? ` and ${displayCityName(Selected_city2)}` : ''}
   </p>
 </div>
 
@@ -563,7 +524,7 @@ function handleCellLeave(cityNum) {
       {/if}
     </div>
   {:else}
-    <p>{Selected_city ? `No data available for ${Selected_city}` : 'Select a city on the map to show data.'}</p>
+    <p>{Selected_city ? `No data available for ${displayCityName(Selected_city)}` : 'Select a city on the map to show data.'}</p>
   {/if}
 </div>
 
@@ -626,7 +587,7 @@ function handleCellLeave(cityNum) {
       {/if}
     </div>
   {:else}
-    <p>{Selected_city2 ? `No data available for ${Selected_city2}` : 'Select a second city on the map to compare.'}</p>
+    <p>{Selected_city2 ? `No data available for ${displayCityName(Selected_city2)}` : 'Select a second city on the map to compare.'}</p>
   {/if}
 </div>
 

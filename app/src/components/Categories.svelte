@@ -2,56 +2,13 @@
   import data from '../Streets.json';
   import PieChart from './Categories_Piecharts.svelte';
   import { selectedCities } from '../stores/compareSelection.js';
+  import { CITY_KEY_TO_LAU, displayCityName, normalizeCityKey } from '../cityMappings.js';
 
   // Only keep lists which have gender = female
   const females = data.filter(d => d.gender === "female");
 
   // Unique cities
   const cities = [...new Set(females.map(d => d.lau_name))].sort();
-
-  // Explicit mapping from city_centers.json keys to dataset lau_name values
-  const CITY_KEY_TO_LAU = {
-    'berlin': 'Berlin, Stadt',
-    'munchen': 'München, Landeshauptstadt',
-    'münchen': 'München, Landeshauptstadt',
-    'munich': 'München, Landeshauptstadt',
-    'athene': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-    'athens': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-    'athen': 'Ψευδοδημοτική Κοινότητα Αθηναίων',
-    'bucuresti': 'Municipiul București',
-    'bucharest': 'Municipiul București',
-    'sibiu': 'Municipiul Sibiu',
-    'oslo': 'Oslo kommune',
-    'zagreb': 'Grad Zagreb',
-    'lisboa': 'Lisbon',
-    'lisbon': 'Lisbon',
-    'gdansk': 'Gdańsk',
-    'gdańsk': 'Gdańsk',
-    'krakow': 'Kraków',
-    'kraków': 'Kraków',
-    'łodz': 'Łódź',
-    'lodz': 'Łódź',
-    'wrocław': 'Wrocław',
-    'wroclaw': 'Wrocław',
-    'københavn': 'København',
-    'kobenhavn': 'København',
-    'copenhagen': 'København',
-    'warszawa': 'Warszawa',
-    'warsaw': 'Warszawa'
-  };
-
-  function normalizeCityKey(name) {
-    const raw = (name ?? '').toString().trim().toLowerCase();
-    if (!raw) return '';
-
-    // Check explicit mapping first
-    if (CITY_KEY_TO_LAU[raw]) return raw;
-
-    const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
-    if (CITY_KEY_TO_LAU[stripped]) return stripped;
-
-    return stripped;
-  }
 
   const cityKeyToCity = (() => {
     const map = new Map();
@@ -263,18 +220,18 @@
   <div class="selectors">
     <div>
       <label>City 1</label><br />
-      <strong>{city1 || '(select on map)'}</strong>
+      <strong>{displayCityName(city1) || '(select on map)'}</strong>
     </div>
 
     <div>
       <label>City 2</label><br />
-      <strong>{city2 || '(optional)'}</strong>
+      <strong>{displayCityName(city2) || '(optional)'}</strong>
     </div>
   </div>
 
   <div class="charts">
     <div class="chart">
-      <h3>{city1 || "City 1"}</h3>
+      <h3>{displayCityName(city1) || "City 1"}</h3>
 
       {#if top1}
         <p>
@@ -288,8 +245,8 @@
         <PieChart
           data={pie1}
           size={250}
-          city={city1}
-          otherCity={city2}
+          city={displayCityName(city1)}
+          otherCity={displayCityName(city2)}
           pctThis={pctCity1}
           pctOther={pctCity2}/>
       {:else}
@@ -297,7 +254,7 @@
       {/if}
       </div>
     <div class="chart">
-      <h3>{city2 || "City 2"}</h3>
+      <h3>{displayCityName(city2) || "City 2"}</h3>
 
       {#if top2}
         <p>
@@ -311,8 +268,8 @@
         <PieChart
           data={pie2}
           size={250}
-          city={city2}
-          otherCity={city1}
+          city={displayCityName(city2)}
+          otherCity={displayCityName(city1)}
           pctThis={pctCity2}
           pctOther={pctCity1}/>
       {:else}

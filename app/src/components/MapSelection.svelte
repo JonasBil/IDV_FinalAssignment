@@ -4,6 +4,7 @@
   import cityData from '../city_centers.json';
   import { selectedCities } from '../stores/compareSelection.js';
   import '../Styles.css';
+  import { LAU_NAME_TO_CITY_KEY, normalizeCityKey } from '../cityMappings.js';
 
   let europe = $state(null);
   const width = 600;
@@ -26,24 +27,6 @@
   let streetsLoading = $state(false);
 
   const cityKeySet = new Set(Object.keys(cityData));
-  
-  // Mapping from dataset lau_name values to city_centers.json keys
-  const LAU_NAME_TO_CITY_KEY = {
-    'berlin, stadt': 'berlin',
-    'münchen, landeshauptstadt': 'munchen',
-    'ψευδοδημοτική κοινότητα αθηναίων': 'athene',
-    'municipiul bucurești': 'bucuresti',
-    'municipiul sibiu': 'sibiu',
-    'oslo kommune': 'oslo',
-    'grad zagreb': 'zagreb',
-    'lisbon': 'lisboa',
-    'gdańsk': 'gdansk',
-    'kraków': 'krakow',
-    'łódź': 'łodz',
-    'wrocław': 'wrocław',
-    'københavn': 'københavn',
-    'warszawa': 'warszawa'
-  };
 
   function toCityKey(name) {
     const raw = (name ?? '').toString().trim().toLowerCase();
@@ -56,7 +39,7 @@
     if (cityKeySet.has(raw)) return raw;
 
     // Strip diacritics and check mapping
-    const stripped = raw.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
+    const stripped = normalizeCityKey(raw);
     if (LAU_NAME_TO_CITY_KEY[stripped]) return LAU_NAME_TO_CITY_KEY[stripped];
     if (cityKeySet.has(stripped)) return stripped;
 
