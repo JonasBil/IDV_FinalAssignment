@@ -67,7 +67,7 @@
   const selectedB = $derived(cityKeyToSummaryCity.get(normalizeCityKey(selectedKeys[1])) ?? cityKeyToSummaryCity.get(selectedKeys[1]) ?? "");
 
   // reactive domain/map using the project's $derived helper
-  const colorDomain = $derived(selectedB ? [selectedA, selectedB] : [selectedA]);
+  const colorDomain = $derived(selectedB ? [displayCityName(selectedA), displayCityName(selectedB)] : [displayCityName(selectedA)]);
   const colorMap = $derived((() => {
     const dom = colorDomain || [];
     return Object.fromEntries(dom.map((c, i) => [c, colorScheme[i % colorScheme.length]]));
@@ -176,24 +176,14 @@
     hoveredBin = null;
   }
 </script>
-<div class= "charts-container"> 
 <!-- Title -->
 <div class="header">
   <h1>Histogram of the date of birth of women in street names in selected cities</h1>
 </div>
 
+<!-- Main cart component -->
+<div class= "charts-container"> 
 <!-- selection (from map) -->
-  <div class="selectors">
-    <div>
-      <label>City 1</label><br />
-      <strong>{displayCityName(selectedA) || '(select on map)'}</strong>
-    </div>
-
-    <div>
-      <label>City 2</label><br />
-      <strong>{displayCityName(selectedB) || '(optional)'}</strong>
-    </div>
-  </div>
 
 <!-- plot -->
 {#if selectedA && rows.length}
@@ -203,12 +193,12 @@
         <div><strong>Count (women)</strong></div>
 
         <div>
-          {displayCityName(selectedA)}: {countsByBin?.[hoveredBin]?.[selectedA] ?? 0}
+          {displayCityName(selectedA)}: {countsByBin?.[hoveredBin]?.[displayCityName(selectedA)] ?? 0}
         </div>
 
         {#if selectedB}
           <div>
-            {displayCityName(selectedB)}: {countsByBin?.[hoveredBin]?.[selectedB] ?? 0}
+            {displayCityName(selectedB)}: {countsByBin?.[hoveredBin]?.[displayCityName(selectedB)] ?? 0}
           </div>
         {/if}
       </div>
@@ -241,9 +231,10 @@
 
   <p>Select City A on the map to show the chart.</p>
 {/if}
+</div>
 
-  <!-- small summary below the chart showing means and comparison -->
 
+<!-- small summary below the chart showing means and comparison -->
   <div class="description_box" aria-live="polite">
     <p> The histogram groups birth years into 10-year bins and counts how many honoured women
       were born in each interval. This lets us compare the age cohorts represented in street names
@@ -251,16 +242,16 @@
     {#if selectedA}
       <p>
         {#if selectedB}
-         On average, women in <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong> are born in {meanA ? Math.round(meanA) : '—'}, while women in <strong style="color: {colorMap[selectedB] || 'currentColor'}">{selectedB}</strong> are born in {meanB ? Math.round(meanB) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}.
+         On average, women in <strong style="color: {colorMap[displayCityName(selectedA)] || 'currentColor'}">{displayCityName(selectedA)}</strong> are born in {meanA ? Math.round(meanA) : '—'}, while women in <strong style="color: {colorMap[displayCityName(selectedB)] || 'currentColor'}">{displayCityName(selectedB)}</strong> are born in {meanB ? Math.round(meanB) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}.
         {:else}
-         On average, women in <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong> are born in {meanA ? Math.round(meanA) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}. Select City B to compare.
+         On average, women in <strong style="color: {colorMap[displayCityName(selectedA)] || 'currentColor'}">{displayCityName(selectedA)}</strong> are born in {meanA ? Math.round(meanA) : '—'}. The overall mean birth year across all cities is {meanAllCities ? Math.round(meanAllCities) : '—'}. Select City B to compare.
         {/if}
 
         {#if selectedA && selectedB && meanA != null && meanB != null}
           {#if meanA < meanB}
-            On average, <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong> honours earlier-born women than <strong style="color: {colorMap[selectedB] || 'currentColor'}">{selectedB}</strong>.
+            On average, <strong style="color: {colorMap[displayCityName(selectedA)] || 'currentColor'}">{displayCityName(selectedA)}</strong> honours earlier-born women than <strong style="color: {colorMap[displayCityName(selectedB)] || 'currentColor'}">{displayCityName(selectedB)}</strong>.
           {:else if meanA > meanB}
-            On average, <strong style="color: {colorMap[selectedB] || 'currentColor'}">{selectedB}</strong> honours earlier-born women than <strong style="color: {colorMap[selectedA] || 'currentColor'}">{selectedA}</strong>.
+            On average, <strong style="color: {colorMap[displayCityName(selectedB)] || 'currentColor'}">{displayCityName(selectedB)}</strong> honours earlier-born women than <strong style="color: {colorMap[displayCityName(selectedA)] || 'currentColor'}">{displayCityName(selectedA)}</strong>.
           {:else}
             Both cities have the same mean birth year.
           {/if}
@@ -270,7 +261,6 @@
       <p>Select City A to see mean birth years and comparisons.</p>
     {/if}
   </div>
-</div>
 <style>
     .selectors {
     display: flex;
