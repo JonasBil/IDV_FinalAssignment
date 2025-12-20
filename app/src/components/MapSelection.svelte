@@ -22,6 +22,7 @@
   let moved = false;
   let hovered = $state(null);
   let tooltipPos = $state({ x: 0, y: 0 });
+  let clickRipples = $state([]);
 
   let femalePctByCity = $state({});
   let streetsLoading = $state(false);
@@ -127,6 +128,18 @@
   
   let projection = $derived(geoMercator().scale(scale).translate(translate));
 
+  // Get projected coordinates for selected cities (for custom SVG overlay)
+  // Must be after projection is defined
+  const selectedCityCoords = $derived(
+    $selectedCities.map(name => {
+      const feature = cityFeatures.find(f => f.properties.name === name);
+      if (!feature) return null;
+      const [x, y] = projection(feature.geometry.coordinates);
+      const r = radiusForPct(feature.properties.femalePct);
+      return { name, x, y, r };
+    }).filter(Boolean)
+  );
+
   async function getEuropeData() {
     const response = await fetch('https://raw.githubusercontent.com/leakyMirror/map-of-europe/master/GeoJSON/europe.geojson');
     europe = await response.json();
@@ -184,7 +197,20 @@
       }
     }
 
-    if (closest?.properties?.name) selectedCities.toggle(closest.properties.name);
+    if (closest?.properties?.name) {
+      // Add click ripple animation
+      const [cx, cy] = projection(closest.geometry.coordinates);
+      const r = radiusForPct(closest.properties.femalePct);
+      const rippleId = Date.now();
+      clickRipples = [...clickRipples, { id: rippleId, x: cx, y: cy, r }];
+      
+      // Remove ripple after animation completes
+      setTimeout(() => {
+        clickRipples = clickRipples.filter(rip => rip.id !== rippleId);
+      }, 600);
+      
+      selectedCities.toggle(closest.properties.name);
+    }
   }
 
   function handleMouseLeave() {
@@ -254,10 +280,57 @@
     onmouseleave={() => { dragging = false; handleMouseLeave(); }}
   >
     {#if europe}
-      <Plot {projection} {width} {height}>
-        <Geo data={europe.features} stroke="white" fill="#374151" />
-        <Geo data={cities.features} r={(d) => radiusForPct(d?.properties?.femalePct)} fill="#fb923c" />
-      </Plot>
+      <div class="plot-wrapper">
+        <Plot {projection} {width} {height}>
+          <Geo data={europe.features} stroke="white" fill="#374151" />
+          <Geo 
+            data={cities.features} 
+            r={(d) => radiusForPct(d?.properties?.femalePct)} 
+            fill={(d) => $selectedCities.includes(d?.properties?.name) ? '#3b82f6' : '#fb923c'} 
+            stroke={(d) => $selectedCities.includes(d?.properties?.name) ? '#93c5fd' : 'none'}
+            strokeWidth={(d) => $selectedCities.includes(d?.properties?.name) ? 2 : 0}
+          />
+        </Plot>
+        
+        <!-- Custom SVG overlay for selection animations -->
+        <svg class="selection-overlay" {width} {height}>
+          <!-- Click ripple animations -->
+          {#each clickRipples as ripple (ripple.id)}
+            <circle 
+              cx={ripple.x} 
+              cy={ripple.y} 
+              r={ripple.r}
+              fill="none"
+              stroke="#60a5fa"
+              stroke-width="3"
+              class="click-ripple"
+            />
+          {/each}
+          
+          {#each selectedCityCoords as city (city.name)}
+            <!-- Pulsing outer ring -->
+            <circle 
+              cx={city.x} 
+              cy={city.y} 
+              r={city.r + 6}
+              fill="none"
+              stroke="#3b82f6"
+              stroke-width="2"
+              class="pulse-ring"
+            />
+            <!-- Secondary expanding ring -->
+            <circle 
+              cx={city.x} 
+              cy={city.y} 
+              r={city.r + 3}
+              fill="none"
+              stroke="#93c5fd"
+              stroke-width="1.5"
+              class="pulse-ring-delayed"
+            />
+          {/each}
+        </svg>
+      </div>
     {/if}
 
     {#if hovered}
@@ -292,6 +365,17 @@
     border-radius: 0.5rem;      /* Rounded corners */
     overflow: hidden;           /* Contain the map on zoom */
     position: relative;         /* For tooltip positioning */
+  }
+
+  .plot-wrapper {
+    position: relative;
+  }
+
+  .selection-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
   }
 
   .tooltip {
@@ -340,4 +424,49 @@
   .slider-control { display: flex; align-items: center; gap: 0.5rem; background: #1f2937; padding: 0.5rem 1rem; border-radius: 0.25rem; border: 1px solid #374151; }
   .slider-control label { font-size: 0.9rem; font-weight: 500; }
   .slider-control input[type=range] { width: 100px; accent-color: #fb923c; cursor: pointer; }
+
+  .pulse-ring {
+    animation: pulse 2s ease-in-out infinite 0.6s;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+
+  .pulse-ring-delayed {
+    animation: pulse 2s ease-in-out infinite 0.9s;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+
+  .click-ripple {
+    animation: ripple 0.6s ease-out forwards;
+    transform-origin: center;
+  }
+
+  @keyframes ripple {
+    0% {
+      r: inherit;
+      opacity: 1;
+      stroke-width: 3;
+    }
+    100% {
+      r: 30;
+      opacity: 0;
+      stroke-width: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.12);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 </style>
