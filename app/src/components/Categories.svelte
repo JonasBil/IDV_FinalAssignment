@@ -4,6 +4,16 @@
   import { selectedCities } from '../stores/compareSelection.js';
   import { CITY_KEY_TO_LAU, displayCityName, normalizeCityKey } from '../cityMappings.js';
 
+  // Category colors (matching pie chart)
+  const categoryColors = {
+    culture: "#17BECF",
+    politics: "#FFC20A",
+    religion: "#00668E",
+    military: "#FF9920",
+    science: "#EF553B",
+    others: "#9E48D0"
+  };
+
   // Only keep lists which have gender = female
   const females = data.filter(d => d.gender === "female");
 
@@ -217,17 +227,6 @@
 </h1>
 
 <div class="charts-container">
-  <div class="selectors">
-    <div>
-      <label>City 1</label><br />
-      <strong>{displayCityName(city1) || '(select on map)'}</strong>
-    </div>
-
-    <div>
-      <label>City 2</label><br />
-      <strong>{displayCityName(city2) || '(optional)'}</strong>
-    </div>
-  </div>
 
   <div class="charts">
     <div class="chart">
@@ -236,7 +235,7 @@
       {#if top1}
         <p>
           Most represented category:
-          <strong>{top1.category}</strong>
+          <strong style="color: {categoryColors[top1.category] || 'currentColor'}">{top1.category}</strong>
           ({top1.pct.toFixed(1)}%)
         </p>
       {/if}
@@ -259,7 +258,7 @@
       {#if top2}
         <p>
           Most represented category:
-          <strong>{top2.category}</strong>
+          <strong style="color: {categoryColors[top2.category] || 'currentColor'}">{top2.category}</strong>
           ({top2.pct.toFixed(1)}%)
         </p>
       {/if}
