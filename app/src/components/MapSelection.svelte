@@ -305,20 +305,25 @@
 
   .tooltip {
     position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    background: #1f2937;
+    color: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #374151;
+    font-size: 1rem;
     pointer-events: none;
     transform: translate(15px, -50%);
-    white-space: nowrap;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .tooltip strong {
+    color: #fb923c;;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
   }
 
   .tooltip-sub {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     color: #d1d5db;
     font-weight: normal;
   }
