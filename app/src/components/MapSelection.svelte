@@ -20,6 +20,7 @@
   let start = { x: 0, y: 0 };
   let moved = false;
   let hovered = $state(null);
+  let tooltipPos = $state({ x: 0, y: 0 });
 
   let femalePctByCity = $state({});
   let streetsLoading = $state(false);
@@ -142,6 +143,14 @@
   }
 
   function handleMouseMove(e) {
+    // Tooltip position relative to the container
+    const containerRect = e.currentTarget.getBoundingClientRect();
+    tooltipPos = { 
+      x: e.clientX - containerRect.left, 
+      y: e.clientY - containerRect.top 
+    };
+
+    // City detection relative to the SVG (projection coordinates)
     const svg = e.currentTarget.querySelector('svg');
     if (!svg) return;
     const rect = svg.getBoundingClientRect();
@@ -219,9 +228,6 @@
   <div class="header">
     <h1>
       Map of Europe
-      {#if hovered}
-        <span class="hovered-city">: {hovered.properties.name}</span>
-      {/if}
     </h1>
     <div class="controls">
       <div class="slider-control">
@@ -262,6 +268,19 @@
         <Geo data={cities.features} r={(d) => radiusForPct(d?.properties?.femalePct)} fill="#fb923c" />
       </Plot>
     {/if}
+
+    {#if hovered}
+      <div 
+        class="tooltip" 
+        style="left: {tooltipPos.x}px; top: {tooltipPos.y}px;"
+      >
+        <strong>{displayCity(hovered.properties.name)}</strong>
+        {#if typeof hovered.properties.femalePct === 'number'}
+          <br>
+          <span class="tooltip-sub">{hovered.properties.femalePct.toFixed(1)}% female streets</span>
+        {/if}
+      </div>
+    {/if}
   </div>
 
   <div class="selection-readout" aria-live="polite">
@@ -281,11 +300,27 @@
     background-color: #1f2937; /* Added background */
     border-radius: 0.5rem;      /* Rounded corners */
     overflow: hidden;           /* Contain the map on zoom */
+    position: relative;         /* For tooltip positioning */
   }
 
-  .hovered-city {
-    color: #fb923c;
-    text-transform: capitalize;
+  .tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    pointer-events: none;
+    transform: translate(15px, -50%);
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .tooltip-sub {
+    font-size: 0.75rem;
+    color: #d1d5db;
+    font-weight: normal;
   }
 
   .selection-readout {
