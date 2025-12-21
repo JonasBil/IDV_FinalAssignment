@@ -365,9 +365,9 @@
     {#if $selectedCities.length === 0}
       No cities selected yet. Click on a city to select it.
     {:else if $selectedCities.length === 1}
-      You selected <span class="orange_bold">{displayCity($selectedCities[0])}</span>, which has {#if typeof femalePctByCity[$selectedCities[0]] === 'number'}{femalePctByCity[$selectedCities[0]].toFixed(1)}%{:else}...{/if} female streets. Select another city to compare.
+      You selected <span class="orange_bold">{displayCity($selectedCities[0])}</span>, in which {#if typeof femalePctByCity[$selectedCities[0]] === 'number'}{femalePctByCity[$selectedCities[0]].toFixed(1)}%{:else}...{/if} of all the streets in this city is named after women. Select another city to compare.
     {:else}
-      You selected <span class="orange_bold">{displayCity($selectedCities[0])}</span> ({#if typeof femalePctByCity[$selectedCities[0]] === 'number'}{femalePctByCity[$selectedCities[0]].toFixed(1)}%{:else}--{/if} female streets) and <span class="orange_bold">{displayCity($selectedCities[1])}</span> ({#if typeof femalePctByCity[$selectedCities[1]] === 'number'}{femalePctByCity[$selectedCities[1]].toFixed(1)}%{:else}--{/if} female streets).
+      You selected <span class="orange_bold">{displayCity($selectedCities[0])}</span> ({#if typeof femalePctByCity[$selectedCities[0]] === 'number'}{femalePctByCity[$selectedCities[0]].toFixed(1)}%{:else}--{/if} of streets in this city is named after women) and <span class="orange_bold">{displayCity($selectedCities[1])}</span> ({#if typeof femalePctByCity[$selectedCities[1]] === 'number'}{femalePctByCity[$selectedCities[1]].toFixed(1)}%{:else}--{/if} of streets in this city is named after women).
     {/if}
   </div>
 </div>

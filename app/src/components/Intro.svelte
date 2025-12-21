@@ -57,15 +57,15 @@
         To illustrate this, the comparison between <strong>Copenhagen</strong> and
         <strong>Chișinău</strong> can be taken as an example.
 
-        In <strong>Copenhagen</strong>, … streets are named after people,
-        <span class="blue_bold">...</span> honour <span class="blue_bold">men</span>,
-        while <span class="orange_bold">...</span> are named after
-        <span class="orange_bold">women</span>, corresponding to <strong>...%</strong>.
+        In <strong>Copenhagen</strong>, 487 streets are named after people,
+        <span class="blue_bold">429</span> honour <span class="blue_bold">men</span>,
+        while only <span class="orange_bold">58</span> are named after
+        <span class="orange_bold">women</span>, corresponding to <strong>11.9%</strong>.
 
         In <strong>Chișinău</strong>, the imbalance is even sharper.
-        Out of … eponymic streets, <span class="blue_bold">...</span> are named after
-        <span class="blue_bold">men</span>, while <span class="orange_bold">...</span> are named after
-        <span class="orange_bold">women</span>, which is less than <strong>...%</strong>.
+        Out of 280 eponymic streets, <span class="blue_bold">257</span> are named after
+        <span class="blue_bold">men</span>, while <span class="orange_bold">23</span> are named after
+        <span class="orange_bold">women</span>, which is <strong>8.2%</strong>.
       </p>
 
       <p>
@@ -108,7 +108,7 @@
   }
 
   .toggle-btn {
-    margin: 1.5rem auto;
+    margin: 0.5rem auto;
     padding: 0.6rem 1.2rem;
     border-radius: 999px;
     border: 1px solid #f59e0b;
@@ -125,7 +125,7 @@
   }
 
   .example {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     animation: fadeIn 0.3s ease-in-out;
   }
 
@@ -133,7 +133,7 @@
     font-size: 0.95rem;
     color: #9ca3af;
     font-style: italic;
-    margin-top: 2rem;
+    margin-top: 1rem;
   }
 
   @keyframes fadeIn {

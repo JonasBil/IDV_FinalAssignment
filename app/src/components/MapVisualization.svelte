@@ -58,8 +58,91 @@
   let layers = $state({ female: [], male: [], other: [] });
   let counts = $state({ female: 0, male: 0, other: 0 });
 
+  // European average data (pre-calculated from all cities)
+  let europeanAvgFemalePct = $state(null);
+  let allCityStats = $state({});
+
+  // Load European average from CityStreetData files
+  async function loadEuropeanAverage() {
+    const cacheKey = 'europeanAvgStats_v3';
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const data = JSON.parse(cached);
+        europeanAvgFemalePct = data.avgFemalePct;
+        allCityStats = data.cityStats;
+        return;
+      }
+
+      // Load all city data files in parallel
+      const cityDataPromises = cities.map(async (city) => {
+        try {
+          const data = (await import(`../CityStreetData/${city}_enriched.json`)).default;
+          let femaleCount = 0;
+          let maleCount = 0;
+          
+          for (const f of data.features) {
+            const g = f.properties.gender;
+            if (g === 'female') femaleCount++;
+            else if (g === 'male') maleCount++;
+          }
+          
+          return { city, femaleCount, maleCount };
+        } catch (e) {
+          console.warn(`Failed to load ${city}`, e);
+          return null;
+        }
+      });
+
+      const results = await Promise.all(cityDataPromises);
+
+      // Calculate per-city stats (only count female + male streets, not "other")
+      const stats = {};
+      let totalFemales = 0;
+      let totalPeopleStreets = 0;
+
+      for (const result of results) {
+        if (!result) continue;
+        const { city, femaleCount, maleCount } = result;
+        const peopleTotal = femaleCount + maleCount;
+        stats[city] = {
+          total: peopleTotal,
+          female: femaleCount,
+          femalePct: peopleTotal > 0 ? (femaleCount / peopleTotal) * 100 : 0
+        };
+        totalFemales += femaleCount;
+        totalPeopleStreets += peopleTotal;
+      }
+
+      const avgPct = totalPeopleStreets > 0 ? (totalFemales / totalPeopleStreets) * 100 : 0;
+      europeanAvgFemalePct = avgPct;
+      allCityStats = stats;
+
+      localStorage.setItem(cacheKey, JSON.stringify({ avgFemalePct: avgPct, cityStats: stats }));
+    } catch (err) {
+      console.error('Failed to compute European average', err);
+    }
+  }
+
+  // Compare current city to European average
+  let comparisonText = $derived(() => {
+    if (europeanAvgFemalePct === null || streetsNamedAfterPeople === 0) return '';
+    const femalePct = parseFloat(String(femalePctOfPeople));
+    const diff = femalePct - europeanAvgFemalePct;
+    
+    if (diff >= 2) return 'much more than';
+    if (diff >= 0.5) return 'more than';
+    if (diff > -0.5) return 'about the same as';
+    if (diff > -2) return 'less than';
+    return 'much less than';
+  });
+
   // Calculate percentages
   let totalStreets = $derived(counts.female + counts.male + counts.other);
+  // Streets named after people = female + male (not "other" - those are not named after people)
+  let streetsNamedAfterPeople = $derived(counts.female + counts.male);
+  // Female percentage is relative to streets named after people
+  let femalePctOfPeople = $derived(streetsNamedAfterPeople > 0 ? ((counts.female / streetsNamedAfterPeople) * 100).toFixed(1) : 0);
   let percentages = $derived({
     female: totalStreets > 0 ? ((counts.female / totalStreets) * 100).toFixed(1) : 0,
     male: totalStreets > 0 ? ((counts.male / totalStreets) * 100).toFixed(1) : 0,
@@ -136,6 +219,9 @@
   // Watch for city changes
   $effect(() => { load(selectedCity); });
 
+  // Load European average on mount
+  $effect(() => { loadEuropeanAverage(); });
+
   // Watch for resize if data is loaded but not fitted
   $effect(() => {
     if (geoData && width && height && baseScale === 100) fitMap(geoData);
@@ -204,7 +290,7 @@
 <div class="visualization-container">
   <div class="header">
     <div class="title-section">
-      <h1>Street Names Gender</h1>
+      <h1>City Street Map</h1>
       <p class="subtitle">Click on a street to see more information about the person it was named after</p>
     </div>
     <div class="controls">
@@ -323,8 +409,15 @@
 
   <div class="description">
     <p>
-      This map explores gender representation in European street names, highlighting <span class="orange_bold">female</span> and <span class="blue_bold">male</span> streets. 
-      Based on the Mapping Diversity project by the European Data Journalism Network, it analyzes 145,000+ streets across 30+ cities to spark debate on urban representation. The dataset includes biographical data from Wikidata for each person.
+      This visualization shows a map of all the streets in <strong>{getDisplayName(selectedCity)}</strong>. <span class="orange_bold">Orange</span> streets are named after women and <span class="blue_bold">blue</span> streets are named after men.
+      You can zoom and pan the map, and click on individual streets to learn more about the person they were named after.
+    </p>
+    <p>
+      The map shows that in <span class="orange_bold">{getDisplayName(selectedCity)}</span>, {streetsNamedAfterPeople} streets are named after people. 
+      Of these, <span class="orange_bold">{femalePctOfPeople}%</span> are named after women. 
+      {#if europeanAvgFemalePct !== null}
+        This is <strong>{comparisonText()}</strong> the European average of <strong>{europeanAvgFemalePct.toFixed(1)}%</strong> of streets named after people being female.
+      {/if}
     </p>
   </div>
 </div>
