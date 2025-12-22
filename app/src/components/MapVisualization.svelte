@@ -414,7 +414,7 @@
     </p>
     <p>
       The map shows that in <span class="orange_bold">{getDisplayName(selectedCity)}</span>, {streetsNamedAfterPeople} streets are named after people. 
-      Of these, <span class="orange_bold">{femalePctOfPeople}%</span> are named after women. 
+      Of these, only <span class="orange_bold">{femalePctOfPeople}%</span> are named after women. 
       {#if europeanAvgFemalePct !== null}
         This is <strong>{comparisonText()}</strong> the European average of <strong>{europeanAvgFemalePct.toFixed(1)}%</strong> of streets named after people being female.
       {/if}
