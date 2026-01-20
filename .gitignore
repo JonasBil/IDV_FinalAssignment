@@ -7,7 +7,6 @@ dist/
 *.docx
 
 app/src/data.json
-app/src/Streets.json
 scripts/data.json
 
 .vite/
